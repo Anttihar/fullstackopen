@@ -20,19 +20,35 @@ const Stats = ({good, neutral, bad, total, average}) => {
   }
   return (
     <div>
-      <StatLine stats={good} text="Hyvä: " />
-      <StatLine stats={neutral} text="Neutraali: " />
-      <StatLine stats={bad} text="Huono: " />
-      <StatLine stats={total} text="Yhteensä: " />
-      <StatLine stats={average / total} text="Keskiarvo: " />
-      <StatLine stats={good / total * 100} text="Positiivisia: " symbol="%" />
-    </div>
-  )
-}
-
-const StatLine = ({ text, stats, symbol }) => {
-  return (
-    <p>{text}{stats}{symbol}</p>
+  <table>
+    <tfoot align="left">
+    <tr>
+      <th>Hyvä:</th>
+      <td>{good}</td>
+    </tr>
+    <tr>
+      <th>Neutraali:</th>
+      <td>{neutral}</td>
+    </tr>
+    <tr>
+      <th>Huono:</th>
+      <td>{bad}</td>
+    </tr>
+    <tr>
+      <th>Yhteensä:</th>
+      <td>{total}</td>
+    </tr>
+    <tr>
+      <th>Keskiarvo:</th>
+      <td>{average / total}</td>
+    </tr>
+    <tr>
+      <th>Positiivisia:</th>
+      <td>{good / total * 100}%</td>
+    </tr>
+    </tfoot>
+  </table>
+</div>
   )
 }
 
