@@ -12,31 +12,27 @@ const Button = ({ handleClick, text }) => {
   )
 }
 
-const Stats = ({ stats, text }) => {
-  return (
-    <p>{text}{stats}</p>
-  )
-}
-
-const Average = ({ average, total, text }) => {
+const Stats = ({good, neutral, bad, total, average}) => {
   if (total === 0) {
     return (
-    <p>{text}0</p>
+      <p>Palautetta ei ole vielä annettu</p>
     )
   }
   return (
-     <p>{text}{average / total}</p>
+    <div>
+      <StatLine stats={good} text="Hyvä: " />
+      <StatLine stats={neutral} text="Neutraali: " />
+      <StatLine stats={bad} text="Huono: " />
+      <StatLine stats={total} text="Yhteensä: " />
+      <StatLine stats={average / total} text="Keskiarvo: " />
+      <StatLine stats={good / total * 100} text="Positiivisia: " symbol="%" />
+    </div>
   )
 }
 
-const Prosent = ({ good, total, text }) => {
-  if (total === 0) {
-    return (
-      <p>{text}0</p>
-    )
-  }
+const StatLine = ({ text, stats, symbol }) => {
   return (
-    <p>{text}{good / total * 100}%</p>
+    <p>{text}{stats}{symbol}</p>
   )
 }
 
@@ -69,12 +65,7 @@ const App = () => {
       <Button handleClick={neutraClick} text="Neutraali" />
       <Button handleClick={badClick} text="Huono" />
       <Header text="Tilasto:" />
-      <Stats stats={good} text="Hyvä: " />
-      <Stats stats={neutral} text="Neutraali: " />
-      <Stats stats={bad} text="Huono: " />
-      <Stats stats={total} text="Yhteensä: " />
-      <Average average={average} total={total} text="Keskiarvo: " />
-      <Prosent good={good} total={total} text="Positiivisia: " />
+      <Stats good={good} neutral={neutral} bad={bad} total={total} average={average} />      
     </div>
   )
 }
