@@ -1,16 +1,13 @@
 import { useState } from 'react'
 
-const Anecdotes = () => {
+const Text = ({ anecdote, votes }) => {
   return (
-    <div>{}</div>
+    <div>
+    <p>{anecdote}</p>
+    <p>Äänet: {votes}</p>
+    </div>
   )
 }
-
-const Button = (handleClick) => {
-  return (
-    <button onClick={handleClick}>Seuraava anekdootti</button>
-  )
-  }
 
 const App = () => {
   const anecdotes = [
@@ -23,19 +20,34 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when dianosing patients.',
     'The only way to go fast, is to go well.'
   ]
-   
-  const [selected, setSelected] = useState(0)
+  
+  const points = new Array(anecdotes.length).fill(0)
 
-  const Arpoja = () => {
+  const [ selected, setSelected ] = useState(0)
+  const [ votes, setVotes ] = useState(points)
+
+  const handleNextCLick = () => {
     const luku = Math.floor(Math.random() * anecdotes.length)
     console.log(luku)
+    console.log(votes)
     setSelected(luku)
+  }
+
+  const handleVoteClick = (index) => {
+    const updatedVotes = votes.map((c, i) => {
+      if (i === index) {
+        return c + 1
+      }
+      return c
+    })
+    setVotes(updatedVotes)
   }
 
   return (
     <div>
-      <p>{anecdotes[selected]}</p>
-      <button onClick={Arpoja}>Seuraava anekdootti</button>
+      <Text anecdote={anecdotes[selected]} votes={votes[selected]} />
+      <button onClick={() => handleVoteClick(selected)}>Äänestä</button>
+      <button onClick={handleNextCLick}>Seuraava anekdootti</button>
     </div>
   )
 }
