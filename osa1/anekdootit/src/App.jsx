@@ -3,8 +3,23 @@ import { useState } from 'react'
 const Text = ({ anecdote, votes }) => {
   return (
     <div>
-    <p>{anecdote}</p>
-    <p>Äänet: {votes}</p>
+      <h2>Päivän anekdootti</h2>
+      <p>{anecdote}</p>
+      <p>Äänet: {votes}</p>
+      <br/>
+    </div>
+  )
+}
+
+const BestOfTheDay = ({ anecdotes, votes }) => {
+  const bestValue = Math.max(...votes)
+  const bestIndex = votes.indexOf(bestValue)
+  console.log("korkein", bestValue)
+  return (
+    <div>
+      <h2>Suosituin anekdootti</h2>
+      <p>{anecdotes[bestIndex]}</p>
+      <p>Ääniä: {bestValue}</p>
     </div>
   )
 }
@@ -48,6 +63,7 @@ const App = () => {
       <Text anecdote={anecdotes[selected]} votes={votes[selected]} />
       <button onClick={() => handleVoteClick(selected)}>Äänestä</button>
       <button onClick={handleNextCLick}>Seuraava anekdootti</button>
+      <BestOfTheDay anecdotes={anecdotes} votes={votes} />
     </div>
   )
 }
