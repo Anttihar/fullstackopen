@@ -1,11 +1,14 @@
 import Course from './components/Course'
 
-const App = ({ course }) => {
+const App = ({ courses }) => {
   return (
     <div>
-      <Course course={course} />
+      <h1>Web Development Curriculum</h1>
+      <Course courses={courses} />
     </div>
   )
 }
+  
+
 
 export default App
