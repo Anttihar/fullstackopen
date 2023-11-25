@@ -9,12 +9,13 @@ const App = () => {
   const addNumber = (event) => {
     event.preventDefault()
     const personObject = {name: newName}
-    setPersons(persons.concat(personObject))
+    const checkName = persons.find(person => person.name === personObject.name)
+      ? alert(`${newName} on jo luettelossa`)
+      : setPersons(persons.concat(personObject))
     setNewName('')
   }
 
   const handleNameChange = (event) =>{
-    console.log(event.target.value)
     setNewName(event.target.value)
   }
 
@@ -36,7 +37,9 @@ const App = () => {
       <h2>Numerot:</h2>
       <div>
         {persons.map(person => 
-          <li>{person.name}</li>
+          <li key={person.name}>
+            {person.name}
+          </li>
         )}
       </div>
     </div>
