@@ -47,11 +47,25 @@ const App = () => {
     setFilter(event.target.value)
   } 
 
+  const handleDeleteClick = (id, name) => {
+    window.confirm(`Haluatko todella poistaa henkilön ${name}`)
+    ? services
+        .deletePerson(id)
+        .then(() => {
+          setPersons(persons.filter(p => p.id !== id))
+        })
+    : setPersons(persons)
+  }
+
   return (
     <div>
       <h1>Puhelinluettelo</h1>
       <FilterForm handleFilterChange={handleFilterChange} filter={filter} />
-      <Numbers filter={filter} persons={persons} />
+      <Numbers 
+        filter={filter} 
+        persons={persons}
+        handleDeleteClick={handleDeleteClick}
+      />
       <AddForm 
         handleNameChange={handleNameChange}
         handleNumberChange={handleNumberChange}
