@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import services from './services/persons'
 import FilterForm from './components/Filterform'
 import Numbers from './components/Numbers'
 import AddForm from './components/Addform'
@@ -11,10 +11,10 @@ const App = () => {
   const [filter, setFilter] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
+    services
+      .getPersons()
+      .then(initialPersons => {
+        setPersons(initialPersons)
       })
   }, [])
 
@@ -24,13 +24,12 @@ const App = () => {
       name: newName,
       number: newNumber
     }
-    console.log(personObject)
     persons.find(person => person.name === personObject.name)
       ? alert(`${newName} on jo luettelossa`)
-      : axios
-          .post('http://localhost:3001/persons', personObject)
-          .then(response => {
-            setPersons(persons.concat(response.data))
+      : services
+          .addNewPerson(personObject)
+          .then(addedPerson => {
+            setPersons(persons.concat(addedPerson))
           })      
     setNewName('')
     setNewNumber('')
