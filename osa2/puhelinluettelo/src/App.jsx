@@ -22,13 +22,16 @@ const App = () => {
     event.preventDefault()
     const personObject = {
       name: newName,
-      number: newNumber,
-      id: persons.length + 1
+      number: newNumber
     }
     console.log(personObject)
     persons.find(person => person.name === personObject.name)
       ? alert(`${newName} on jo luettelossa`)
-      : setPersons(persons.concat(personObject))
+      : axios
+          .post('http://localhost:3001/persons', personObject)
+          .then(response => {
+            setPersons(persons.concat(response.data))
+          })      
     setNewName('')
     setNewNumber('')
   }
