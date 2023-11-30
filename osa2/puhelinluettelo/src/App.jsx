@@ -8,6 +8,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
   const [message, setMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState (null)
 
   useEffect(() => {
     services
@@ -31,8 +32,6 @@ const App = () => {
           .addNewPerson(newPerson)
           .then(addedPerson => {
             setPersons(persons.concat(addedPerson))
-          })
-          .then(() => {
             setMessage(`${newPerson.name} lisätty luetteloon`)
             setTimeout(() => {
               setMessage(null)
@@ -49,12 +48,17 @@ const App = () => {
     .changeNumber(newPerson, personId)
     .then(updPerson => {
       setPersons(persons.map(person => person.id !== updPerson.id ? person : updPerson))
-    })
-    .then(() => {
       setMessage(`${newPerson.name} puhelinnumero päivitetty`)
       setTimeout(() => {
         setMessage(null)
-      }, 5000);
+      }, 5000)
+    })    
+    .catch(error => {
+      setErrorMessage(`${newPerson.name} on jo aiemmin poistettu palvelimelta`)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+      setPersons(persons.filter(person => person.id !== personId))
     })
   }
 
@@ -64,8 +68,6 @@ const App = () => {
         .deletePerson(id)
         .then(() => {
           setPersons(persons.filter(p => p.id !== id))
-        })
-        .then(() => {
           setMessage(`${name} poistettu luettelosta`)
           setTimeout(() => {
             setMessage(null)
@@ -90,6 +92,7 @@ const App = () => {
     <div>
       <h1>Puhelinluettelo</h1>
       <content.Notification message={message} />
+      <content.ErrNotification message={errorMessage} />
       <content.FilterForm handleFilterChange={handleFilterChange} filter={filter} />
       <content.Numbers 
         filter={filter} 

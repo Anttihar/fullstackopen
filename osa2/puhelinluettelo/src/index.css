@@ -12,7 +12,6 @@ button {
     color: rgb(99, 23, 23);
     padding-top: 3px;
     font-size: 15px;
-    font-style: bold;
 }
 
 .number {
@@ -24,6 +23,16 @@ button {
 .message {
     color: green;
     background-color: lightgoldenrodyellow;
+    font-size: 20px;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.errMessage {
+    color: red;
+    background-color: lightgray;
     font-size: 20px;
     border-style: solid;
     border-radius: 5px;

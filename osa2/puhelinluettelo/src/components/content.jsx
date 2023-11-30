@@ -45,7 +45,7 @@
 
   const Notification = ({ message }) => {
     if (message === null) {
-    return null
+        return null
     }
     return (
         <div className="message">
@@ -54,4 +54,15 @@
     )
   }
 
-  export default { FilterForm, AddForm, Numbers, Notification }
+  const ErrNotification = ({ message }) => {
+    if (message === null) {
+        return null
+    }
+    return (
+        <div className="errMessage">
+            {message}
+        </div>
+    )
+  }
+
+  export default { FilterForm, AddForm, Numbers, Notification, ErrNotification }
