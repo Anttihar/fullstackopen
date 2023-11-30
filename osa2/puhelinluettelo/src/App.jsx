@@ -20,19 +20,32 @@ const App = () => {
 
   const addNumber = (event) => {
     event.preventDefault()
-    const personObject = {
+    const newPerson = {
       name: newName,
       number: newNumber
     }
-    persons.find(person => person.name === personObject.name)
-      ? alert(`${newName} on jo luettelossa`)
+    persons.find(person => person.name.toLowerCase() === newPerson.name.toLowerCase()) 
+      ? window.confirm(`${newName} on jo luettelossa, korvataanko vanha numero uudella?`)
+        ? replaceNumber(newPerson)
+        : console.log('peruttu')
       : services
-          .addNewPerson(personObject)
+          .addNewPerson(newPerson)
           .then(addedPerson => {
             setPersons(persons.concat(addedPerson))
           })      
     setNewName('')
     setNewNumber('')
+  }
+
+  const replaceNumber = (newPerson) => {
+    const foundPerson = persons.find(person => person.name.toLowerCase() === newPerson.name.toLowerCase())
+    const personId = foundPerson.id
+    services
+    .changeNumber(newPerson, personId)
+    .then(updPerson => {
+      setPersons(persons.map(person => person.id !== updPerson.id ? person : updPerson))
+      console.log('päivitetty: ', updPerson)
+    })
   }
 
   const handleNameChange = (event) => {

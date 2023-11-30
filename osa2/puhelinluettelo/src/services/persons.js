@@ -7,15 +7,19 @@ const getPersons = () => {
     return request.then(response => response.data)
 }
 
-const addNewPerson = personObject => {
-    const request = axios.post(baseUrl, personObject)
+const addNewPerson = newPerson => {
+    const request = axios.post(baseUrl, newPerson)
     return request.then(response => response.data)
 }
 
 const deletePerson = (id) => {
-    console.log(id)
     const request = axios.delete(`${baseUrl}/${id}`)
     return request.then(response => response.data)
 }
 
-export default { getPersons, addNewPerson, deletePerson }
+const changeNumber = (newPerson, id) => {
+    const request = axios.put(`${baseUrl}/${id}`, newPerson)
+    return request.then(response => response.data)
+}
+
+export default { getPersons, addNewPerson, deletePerson, changeNumber }
