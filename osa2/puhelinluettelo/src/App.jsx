@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react'
 import services from './services/persons'
-import FilterForm from './components/Filterform'
-import Numbers from './components/Numbers'
-import AddForm from './components/Addform'
+import content from './components/content'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [message, setMessage] = useState('')
 
   useEffect(() => {
     services
@@ -32,7 +31,13 @@ const App = () => {
           .addNewPerson(newPerson)
           .then(addedPerson => {
             setPersons(persons.concat(addedPerson))
-          })      
+          })
+          .then(() => {
+            setMessage(`${newPerson.name} lisätty luetteloon`)
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
+          })
     setNewName('')
     setNewNumber('')
   }
@@ -48,6 +53,16 @@ const App = () => {
     })
   }
 
+  const handleDeleteClick = (id, name) => {
+    window.confirm(`Haluatko todella poistaa henkilön ${name}`)
+    ? services
+        .deletePerson(id)
+        .then(() => {
+          setPersons(persons.filter(p => p.id !== id))
+        })
+    : setPersons(persons)
+  }
+
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
@@ -60,26 +75,17 @@ const App = () => {
     setFilter(event.target.value)
   } 
 
-  const handleDeleteClick = (id, name) => {
-    window.confirm(`Haluatko todella poistaa henkilön ${name}`)
-    ? services
-        .deletePerson(id)
-        .then(() => {
-          setPersons(persons.filter(p => p.id !== id))
-        })
-    : setPersons(persons)
-  }
-
   return (
     <div>
       <h1>Puhelinluettelo</h1>
-      <FilterForm handleFilterChange={handleFilterChange} filter={filter} />
-      <Numbers 
+      <content.Notification message={message} />
+      <content.FilterForm handleFilterChange={handleFilterChange} filter={filter} />
+      <content.Numbers 
         filter={filter} 
         persons={persons}
         handleDeleteClick={handleDeleteClick}
       />
-      <AddForm 
+      <content.AddForm 
         handleNameChange={handleNameChange}
         handleNumberChange={handleNumberChange}
         addNumber={addNumber}
@@ -88,7 +94,6 @@ const App = () => {
       />
     </div>
   )
-
 }
 
 export default App
