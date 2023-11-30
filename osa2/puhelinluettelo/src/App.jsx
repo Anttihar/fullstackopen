@@ -7,7 +7,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
-  const [message, setMessage] = useState('')
+  const [message, setMessage] = useState(null)
 
   useEffect(() => {
     services
@@ -49,7 +49,12 @@ const App = () => {
     .changeNumber(newPerson, personId)
     .then(updPerson => {
       setPersons(persons.map(person => person.id !== updPerson.id ? person : updPerson))
-      console.log('päivitetty: ', updPerson)
+    })
+    .then(() => {
+      setMessage(`${newPerson.name} puhelinnumero päivitetty`)
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000);
     })
   }
 
@@ -59,6 +64,12 @@ const App = () => {
         .deletePerson(id)
         .then(() => {
           setPersons(persons.filter(p => p.id !== id))
+        })
+        .then(() => {
+          setMessage(`${name} poistettu luettelosta`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000);
         })
     : setPersons(persons)
   }

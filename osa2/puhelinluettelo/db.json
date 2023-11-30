@@ -21,8 +21,8 @@
       "id": 4
     },
     {
-      "name": "ARTO",
-      "number": "2222",
+      "name": "arto",
+      "number": "1111",
       "id": 5
     },
     {
@@ -34,11 +34,6 @@
       "name": "make",
       "number": "135",
       "id": 7
-    },
-    {
-      "name": "jari",
-      "number": "3151",
-      "id": 8
     }
   ]
 }
