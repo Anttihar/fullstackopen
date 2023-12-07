@@ -1,0 +1,41 @@
+h1, h2, h3 {
+    color: green;
+    font-style: italic;
+}
+
+button {
+    background-color: yellow;
+    color: red;
+}
+
+.name {
+    color: rgb(99, 23, 23);
+    padding-top: 3px;
+    font-size: 15px;
+}
+
+.number {
+    color: rgb(5, 75, 5);
+    padding-top: 3px;
+    font-size: 15px;
+}
+
+.message {
+    color: green;
+    background-color: lightgoldenrodyellow;
+    font-size: 20px;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.errMessage {
+    color: red;
+    background-color: lightgray;
+    font-size: 20px;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
