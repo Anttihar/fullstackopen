@@ -40,12 +40,28 @@ app.get('/api/persons/:id', (req, res) => {
 app.post('/api/persons/', (req, res) => {
     const body = req.body
     const newId = Math.floor(Math.random() * 100000000)
-    console.log(newId)
+
+    if (!body.name) {
+        return res.status(400).json({
+            error: 'Nimi puuttuu'
+        })
+    }
+    if (!body.number) {
+        return res.status(400).json({
+            error: 'Numero puuttuu'
+        })
+    }
+    if (persons.find(person => person.name.toLowerCase() === body.name.toLowerCase())) {
+        return res.status(400).json({
+            error: 'Nimi on jo luettelossa'
+        })
+    }
     const newPerson = {
         name: body.name,
         number: body.number,
         id: newId
     }
+
     persons = persons.concat(newPerson)
     res.json(newPerson)
 })
