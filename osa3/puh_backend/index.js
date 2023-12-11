@@ -78,10 +78,13 @@ app.delete('/api/persons/:id', (req, res, next) => {
 })
 
 app.get('/info', (req, res) => {
-    res.send(
-        `<p>Phonebook has info for ${persons.length} people</p>
-        <p>${Date()}</p>`
-    )
+    Person.find({})
+        .then(persons => {
+             res.send(
+                `<p>Phonebook has info for ${persons.length} people</p>
+                <p>${Date()}</p>`
+             )
+        })
 })
 
 app.use(unknownEndpoint)
