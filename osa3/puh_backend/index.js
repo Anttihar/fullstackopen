@@ -31,31 +31,33 @@ app.get('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons/', (req, res) => {
     const body = req.body
-    const newId = Math.floor(Math.random() * 100000000)
 
     if (!body.name) {
         return res.status(400).json({
             error: 'Nimi puuttuu'
         })
+        
     }
     if (!body.number) {
         return res.status(400).json({
             error: 'Numero puuttuu'
         })
     }
+/*
     if (persons.find(person => person.name.toLowerCase() === body.name.toLowerCase())) {
         return res.status(400).json({
             error: 'Nimi on jo luettelossa'
         })
     }
-    const newPerson = {
+*/
+    const newPerson = new Person({
         name: body.name,
-        number: body.number,
-        id: newId
-    }
+        number: body.number
+    })
 
-    persons = persons.concat(newPerson)
-    res.json(newPerson)
+    newPerson.save().then(addedPerson => {
+        res.json(addedPerson)
+    })
 })
 
 app.delete('/api/persons/:id', (req, res) => {
