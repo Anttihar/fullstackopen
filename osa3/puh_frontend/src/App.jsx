@@ -13,8 +13,8 @@ const App = () => {
   useEffect(() => {
     services
       .getPersons()
-      .then(initialPersons => {
-        setPersons(initialPersons)
+      .then(persons => {
+        setPersons(persons)
       })
   }, [])
 
