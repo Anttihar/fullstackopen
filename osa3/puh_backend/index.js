@@ -41,24 +41,6 @@ app.get('/api/persons/:id', (req, res, next) => {
 app.post('/api/persons/', (req, res) => {
     const body = req.body
 
-    if (!body.name) {
-        return res.status(400).json({
-            error: 'Nimi puuttuu'
-        })
-        
-    }
-    if (!body.number) {
-        return res.status(400).json({
-            error: 'Numero puuttuu'
-        })
-    }
-/*
-    if (persons.find(person => person.name.toLowerCase() === body.name.toLowerCase())) {
-        return res.status(400).json({
-            error: 'Nimi on jo luettelossa'
-        })
-    }
-*/
     const newPerson = new Person({
         name: body.name,
         number: body.number
@@ -73,6 +55,17 @@ app.delete('/api/persons/:id', (req, res, next) => {
     Person.findByIdAndDelete(req.params.id)
         .then(result => {
             res.status(204).end()
+        })
+        .catch(error => next(error))
+})
+
+app.put('/api/persons/:id', (req, res, next) => {
+    const body = req.body
+    const newNumber = req.body.number
+        
+    Person.findByIdAndUpdate(req.params.id, body, {new: newNumber})
+        .then(updatedPerson => {
+            res.json(updatedPerson)
         })
         .catch(error => next(error))
 })

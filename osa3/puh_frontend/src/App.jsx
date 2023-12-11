@@ -20,10 +20,15 @@ const App = () => {
 
   const addNumber = (event) => {
     event.preventDefault()
+    if (!newName || !newNumber) {
+      return window.alert('Täytä kaikki kentät!')
+    }
+  
     const newPerson = {
       name: newName,
       number: newNumber
     }
+
     persons.find(person => person.name.toLowerCase() === newPerson.name.toLowerCase()) 
       ? window.confirm(`${newName} on jo luettelossa, korvataanko vanha numero uudella?`)
         ? replaceNumber(newPerson)
@@ -37,6 +42,7 @@ const App = () => {
               setMessage(null)
             }, 5000)
           })
+          .catch(error => console.log(error))
     setNewName('')
     setNewNumber('')
   }
