@@ -19,6 +19,12 @@ test('oikea määrä JSON-muotoisia blogeja', async () => {
     expect(response.body).toHaveLength(helper.testBlogs.length)
 })
 
+test('id kentän nimen tarkastus', async () => {
+    const blogs = await api.get('/api/blogs')
+
+    blogs.body.every(blog => expect(blog.id).toBeDefined())
+})
+
 afterAll(async () => {
     await mongoose.connection.close()
 })
