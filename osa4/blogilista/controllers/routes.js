@@ -16,8 +16,15 @@ blogRoutes.post('/', async (req, res) => {
         url: body.url,
         likes: body.likes || 0
     })
-    const savedBlog = await blog.save()
-    res.status(201).json(savedBlog)
+    
+    try {
+        const savedBlog = await blog.save()
+        res.status(201).json(savedBlog)
+    } catch {
+        res.status(400).end()
+    }
+        
+    
         
 })
 

@@ -58,8 +58,33 @@ test('tyhjä likes kenttä saa arvoksi 0', async () => {
         .send(newBlog)
         .expect(201)
 
-    console.log(response.body)
     expect(response.body.likes).toBe(0)
+})
+
+test('kentän title puuttuessa status 400', async () => {
+    const newBlog = {
+        author: "Pekka",
+        url: "http://pekanblogi.fi",
+        likes: 3
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+})
+
+test('kentän url puuttuessa status 400', async () => {
+    const newBlog = {
+        title: "Pekan blogi",
+        author: "Pekka",
+        likes: 3
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
 })
 
 afterAll(async () => {
