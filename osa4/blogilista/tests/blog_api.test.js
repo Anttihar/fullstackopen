@@ -25,6 +25,27 @@ test('id kentän nimen tarkastus', async () => {
     blogs.body.every(blog => expect(blog.id).toBeDefined())
 })
 
+test('uuden blogin lisääminen', async () => {
+    const newBlog = {
+        title: "Raipe kirja",
+        author: "Raipe",
+        url: "http://raipe.com",
+        likes: 100,
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.testBlogs.length + 1)
+
+    const titles = blogsAtEnd.map(b => b.title)
+    expect(titles).toContain('Raipe kirja')
+})
+
 afterAll(async () => {
     await mongoose.connection.close()
 })
