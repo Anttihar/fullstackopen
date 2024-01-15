@@ -89,14 +89,30 @@ test('kentän url puuttuessa status 400', async () => {
 
 test('yksittäisen blogin poistaminen', async () => {
     const blogsAtStart = await helper.blogsInDb()
-    const noteToDelete = blogsAtStart[0]
+    const blogToDelete = blogsAtStart[0]
 
     await api
-        .delete(`/api/blogs/${noteToDelete.id}`)
+        .delete(`/api/blogs/${blogToDelete.id}`)
         .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
     expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1)
+})
+
+test('yksittäisen blogin muokkaus', async () => {
+    const editedBlog = {
+        likes: 9
+      }
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
+
+    const updatedBlog = await api
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .send(editedBlog)
+        .expect(200)
+    console.log(blogToUpdate)
+    console.log(updatedBlog.body)
+    expect(blogToUpdate).not.toEqual(updatedBlog.body)
 })
 
 afterAll(async () => {
