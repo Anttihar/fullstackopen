@@ -87,6 +87,18 @@ test('kentän url puuttuessa status 400', async () => {
         .expect(400)
 })
 
+test('yksittäisen blogin poistaminen', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const noteToDelete = blogsAtStart[0]
+
+    await api
+        .delete(`/api/blogs/${noteToDelete.id}`)
+        .expect(204)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1)
+})
+
 afterAll(async () => {
     await mongoose.connection.close()
 })

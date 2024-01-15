@@ -22,10 +22,12 @@ blogRoutes.post('/', async (req, res) => {
         res.status(201).json(savedBlog)
     } catch {
         res.status(400).end()
-    }
-        
-    
-        
+    }     
+})
+
+blogRoutes.delete('/:id', async (req, res) => {
+    await Blog.findByIdAndDelete(req.params.id)
+    res.status(204).end()
 })
 
 module.exports = blogRoutes
