@@ -34,7 +34,7 @@ describe('Blogin lisäämiseen liittyvät testit', () => {
             title: "Raipe kirja",
             author: "Raipe",
             url: "http://raipe.com",
-            likes: 100,
+            likes: 100
         }
 
         await api
@@ -168,6 +168,42 @@ describe('Käyttäjän lisäämiseen liittyvät testit', () => {
         expect(result.body.error).toContain('expected `username` to be unique')
         const usersAtEnd = await helper.usersInDb()
         expect(usersAtStart).toHaveLength(usersAtEnd.length)
+    })
+
+    test('liian lyhyt käyttäjänimi', async () => {
+        const usersAtStart = await helper.usersInDb()
+
+        const newUser = {
+            username: "ma",
+            password: "salasana"
+        }
+
+        await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+
+        const usersAtEnd = await helper.usersInDb()
+        expect(usersAtEnd).toHaveLength(usersAtStart.length)
+    })
+
+    test('liian lyhyt salasana', async () => {
+        const usersAtStart = await helper.usersInDb()
+
+        const newUser = {
+            username: "make",
+            password: "sa"
+        }
+
+        await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+
+        const usersAtEnd = await helper.usersInDb()
+        expect(usersAtEnd).toHaveLength(usersAtStart.length)
     })
 })
 
