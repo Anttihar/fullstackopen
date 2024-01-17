@@ -1,10 +1,10 @@
-const { info } = require('./logger')
+const logger = require('./logger')
 
 const reqLogger = (req, res, next) => {
-    info('Method:', req.method)
-    info('Path:', req.path)
-    info('Body:', req.body)
-    info('---')
+    logger.info('Method:', req.method)
+    logger.info('Path:', req.path)
+    logger.info('Body:', req.body)
+    logger.info('---')
     next()
 }
 
@@ -13,9 +13,15 @@ const unknownEndpoint = (req, res) => {
 }
 
 const errorHandler = (error, req, res, next) => {
+    logger.error(error.message)
+    
     if (error.name === 'CastError') {
         return res.status(400).send({ error: 'malformatted error' })
+    } else if (error.name === 'ValidationError') {
+        return res.status(400).json({ error: error.message })
     }
+
+    next(error)
 }
 
-module.export = { reqLogger, unknownEndpoint, errorHandler }
+module.exports = { reqLogger, unknownEndpoint, errorHandler }

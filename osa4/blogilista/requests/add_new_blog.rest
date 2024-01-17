@@ -2,7 +2,9 @@ POST http://localhost:3001/api/blogs
 Content-Type: application/json
 
 {
-    "title": "Otsikko",
-    "author": "Sami",
-    "likes": 10
+    "title": "Ipan matkassa",
+    "author": "Pena",
+    "likes": 10,
+    "url": "http://Penanblogi.fi",
+    "userId": "65a7c7e7ef073a2072754aef"
 }
