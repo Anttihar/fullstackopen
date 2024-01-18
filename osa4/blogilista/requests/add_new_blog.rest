@@ -6,6 +6,5 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoicGVuYSIsI
     "title": "Se on ihan 50/60",
     "author": "Rami",
     "likes": 10,
-    "url": "http://Raminblogi.fi",
-    "userId": "65a834c0651d8119951099e8"
+    "url": "http://Raminblogi.fi"
 }
