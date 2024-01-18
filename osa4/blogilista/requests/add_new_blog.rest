@@ -1,10 +1,11 @@
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoicGVuYSIsImlkIjoiNjVhN2M3ZTdlZjA3M2EyMDcyNzU0YWVmIiwiaWF0IjoxNzA1NjEzMzY3fQ.iMH84PfZfgLeIj1GuSkbYlTkTUszgdtUwCQKt2QeyDQ
 
 {
-    "title": "Terse",
-    "author": "Pena",
+    "title": "Se on ihan 50/60",
+    "author": "Rami",
     "likes": 10,
-    "url": "http://Penanblogi.fi",
-    "userId": "65a7c7e7ef073a2072754aef"
+    "url": "http://Raminblogi.fi",
+    "userId": "65a834c0651d8119951099e8"
 }
