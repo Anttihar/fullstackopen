@@ -2,22 +2,16 @@ const jwt = require('jsonwebtoken')
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const middleware = require('../utils/middleware')
 
 blogsRouter.get('/', async (req, res) => {
     const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
     res.json(blogs)
-    
 })
 
-blogsRouter.post('/', async (req, res) => {
+blogsRouter.post('/', middleware.userExtractor, async (req, res) => {
     const body = req.body
-
-    const decodedToken = await jwt.verify(req.token, process.env.SECRET)
-    if (!decodedToken.id) {
-        return res.status(401).json({ error: 'token invalid' })
-    }
-
-    const user = await User.findById(decodedToken.id)
+    const user = req.user
 
     const blog = new Blog({
         title: body.title,
@@ -33,21 +27,15 @@ blogsRouter.post('/', async (req, res) => {
     res.status(201).json(savedBlog)
 })
 
-blogsRouter.delete('/:id', async (req, res) => {
-    const decodedToken = await jwt.verify(req.token, process.env.SECRET)
-    if (!decodedToken.id) {
-        res.status(401).json({ error: 'token invalid' })
-    }
-
-    const user = await User.findById(decodedToken.id)
-    console.log('dekoodattu käyttäjä: ', user.id)
-
+blogsRouter.delete('/:id', middleware.userExtractor, async (req, res) => {
+    const user = req.user
+    
     const blog = await Blog.findById(req.params.id)
-    console.log('blogi: ', blog.user.toString())
-
-    if (blog.user.toString() === user.id) {
+    if (!blog) {
+        return res.status(404).json({ error: 'invalid blog id' })
+    } else if (blog.user.toString() === user.id) {
         await Blog.findByIdAndDelete(req.params.id)
-        res.status(204).end()
+        return res.status(204).end()
     } else {
         res.status(401).json({ error: 'not access to delete this blog'})
     }
