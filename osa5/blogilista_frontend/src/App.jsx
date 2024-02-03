@@ -1,34 +1,26 @@
-import { useState, useEffect } from "react"
-import Blog from "../components/blog"
+import { useState, useEffect, useRef } from "react"
+import Blog from "./components/blog"
 import "../index.css"
 import blogService from "../servises/blogs"
 import loginService from "../servises/login"
-import LoginForm from "../components/LoginForm"
-import Notification from "../components/Notification"
-import AddBlog from "../components/addBlogForm"
+import LoginForm from "./components/LoginForm"
+import Notification from "./components/Notification"
+import AddBlog from "./components/addBlogForm"
+import Togglable from "./components/Togglable"
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [message, setMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-
+  const handleLogin = async (username, password) => {
     try {
       const user = await loginService.login({ username, password })
       window.localStorage.setItem('loggedAppUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
       console.log(`${user.name} kirjautunut sisään`)
-      setUsername('')
-      setPassword('')
       setMessage(`Moi ${user.name}!`)
       setTimeout(() => {
         setMessage(null)
@@ -56,21 +48,12 @@ const App = () => {
     }
   }, [])
 
-  const addBlog = (event) => {
-    event.preventDefault()
-    const blogObject = {
-      title: title,
-      author: user.name,
-      url: url
-    }
-    
+  const addBlog = (blogObject) => {
+    blogFormRef.current.toggleVisibility()
     blogService
       .create(blogObject)
       .then(newBlog => {
         setBlogs(blogs.concat(newBlog))
-        setTitle('')
-        setAuthor('')
-        setUrl('')
         setMessage('Uusi blogi lisätty onnistuneesti')
         setTimeout(() => {
           setMessage(null)
@@ -88,10 +71,9 @@ const App = () => {
   const logout = () => {
     setUser(null)
     window.localStorage.clear()
-    if (!user) {
-      console.log('kirjauduttu ulos')
     }
-  }
+
+  const blogFormRef = useRef()
 
   if (user === null) {
     return (
@@ -99,13 +81,7 @@ const App = () => {
         <h1>Blogilista</h1>
         <br />
         <h3>Kirjaudu sisään:</h3>
-        <LoginForm 
-          handleLogin={handleLogin}
-          username={username}
-          password={password}
-          setUsername={setUsername}
-          setPassword={setPassword}
-        />
+        <LoginForm login={handleLogin} />
         <Notification errorMessage={errorMessage} />
       </div>
     )
@@ -121,24 +97,17 @@ const App = () => {
         <button onClick={logout}>Kirjaudu ulos</button>
       </div>}
 
-        {blogs.map(blog => 
-          <Blog key={blog.id} blog={blog} />
-        )}        
-        <br />
-        <AddBlog
-          addBlog={addBlog}
-          title={title}
-          setTitle={setTitle}
-          author={author}
-          setAuthor={setAuthor}
-          url={url}
-          setUrl={setUrl}
-        />
-        <Notification message={message} errorMessage={errorMessage}/>
+      {blogs.map(blog => 
+        <Blog key={blog.id} blog={blog} />
+      )}
+
+      <br />
+      <Togglable buttonLabel="Lisää uusi blogi" ref={blogFormRef}>
+        <AddBlog createBlog={addBlog} />
+      </Togglable>
+      <Notification message={message} errorMessage={errorMessage}/>
     </div>
   )
 }
-
-
 
 export default App
