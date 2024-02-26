@@ -14,7 +14,7 @@ const App = () => {
   const [message, setMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
 
-  const handleLogin = async (username, password) => {
+  const login = async (username, password) => {
     try {
       const user = await loginService.login({ username, password })
       window.localStorage.setItem('loggedAppUser', JSON.stringify(user))
@@ -48,30 +48,72 @@ const App = () => {
     }
   }, [])
 
-  const addBlog = (blogObject) => {
+  const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
-    blogService
-      .create(blogObject)
-      .then(newBlog => {
-        setBlogs(blogs.concat(newBlog))
-        setMessage('Uusi blogi lisätty onnistuneesti')
-        setTimeout(() => {
-          setMessage(null)
-        }, 5000);
-      })
-      .catch((error) => {
-        console.log(error)
-        setErrorMessage('Jotain meni pieleen')
-        setTimeout(() => {
-          setErrorMessage('')
-        }, 5000);
-      })
+    console.log('addBlog kutsuttu')
+    try {
+      const addedBlog = await blogService.create(blogObject)
+      console.log('lisätty blogi: ', addedBlog)
+      setBlogs(blogs.concat(addedBlog))
+      console.log('blogs tila muutettu')
+      setMessage('Uusi blogi lisätty onnistuneesti')
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+    }
+    catch (error) {
+      console.log(error)
+      setErrorMessage('Jotain meni pieleen')
+      setTimeout(() => {
+        setErrorMessage('')
+      }, 5000)
+    }
+  }
+
+  const handleDelete = (id) => {
+    if (window.confirm(`Haluatko varmasti poistaa tämän blogin?`)) {
+      blogService
+        .remove(id)
+        .then(() => {
+          setBlogs(blogs.filter(blog => blog.id !== id))
+          setMessage('Blogi poistettu')
+          setTimeout(() => {
+            setMessage('')
+          }, 5000)
+        })
+        .catch((error) => {
+          console.log(error.response.status)
+          if (error.response.status === 401) {
+            setErrorMessage('Käyttöoikeutesi eivät riitä tämän blogin poistamiseen')
+            setTimeout(() => {
+              setErrorMessage('')
+            }, 5000)
+          } else {
+            setErrorMessage('Blogin poistaminen epäonnistui')
+            setTimeout(() => {
+              setErrorMessage('')
+            }, 5000)
+          }
+        })
+    }
+  }
+
+  const handleLike = async (likedObject) => {
+    try {
+      const likedBlog = await blogService.update(likedObject)
+      console.log(likedBlog)
+      setBlogs(blogs.map(blog => blog.id !== likedBlog.id ? blog : likedObject))
+    }
+    catch (error) {
+      setErrorMessage('jotain meni pieleen')
+    }
+
   }
 
   const logout = () => {
     setUser(null)
     window.localStorage.clear()
-    }
+  }
 
   const blogFormRef = useRef()
 
@@ -81,30 +123,39 @@ const App = () => {
         <h1>Blogilista</h1>
         <br />
         <h3>Kirjaudu sisään:</h3>
-        <LoginForm login={handleLogin} />
+        <LoginForm login={login} />
         <Notification errorMessage={errorMessage} />
       </div>
     )
   }
 
+  const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
+
   return (
     <div>
-      <h1>Blogilista</h1> 
-      
+      <h1>Blogilista</h1>
+
       {user && <div className="logged">
-        {user.name} kirjautunut 
+        {user.name} kirjautunut
         <br />
         <button onClick={logout}>Kirjaudu ulos</button>
       </div>}
 
-      {blogs.map(blog => 
-        <Blog key={blog.id} blog={blog} />
+      <Togglable buttonLabel="Lisää uusi blogi" ref={blogFormRef}>
+        <AddBlog createBlog={addBlog} user={user.name} />
+      </Togglable>
+
+      <h3>Blogit:</h3>
+      {sortedBlogs.map(blog =>
+        <Blog
+          key={blog.id}
+          blog={blog}
+          handleDelete={handleDelete}
+          addLike={handleLike}
+        />
       )}
 
       <br />
-      <Togglable buttonLabel="Lisää uusi blogi" ref={blogFormRef}>
-        <AddBlog createBlog={addBlog} />
-      </Togglable>
       <Notification message={message} errorMessage={errorMessage}/>
     </div>
   )
