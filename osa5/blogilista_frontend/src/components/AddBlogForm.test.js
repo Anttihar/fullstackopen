@@ -1,8 +1,8 @@
 import React from "react"
 import "@testing-library/jest-dom"
 import { render, screen } from "@testing-library/react"
-import AddBlogForm from "./addBlogForm"
 import userEvent from "@testing-library/user-event"
+import AddBlogForm from "/addBlogForm.jsx"
 
 test('oikea takaisinkutsufunktio uutta blogia luotaessa', async () => {
   const user = userEvent.setup()

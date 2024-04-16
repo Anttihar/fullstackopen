@@ -1,0 +1,10 @@
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoicGVuYSIsImlkIjoiNjVhN2M3ZTdlZjA3M2EyMDcyNzU0YWVmIiwiaWF0IjoxNzA1NjEzMzY3fQ.iMH84PfZfgLeIj1GuSkbYlTkTUszgdtUwCQKt2QeyDQ
+
+{
+    "title": "pölölölöööö",
+    "author": "Pena",
+    "likes": 10,
+    "url": "http://Penanblogi.fi"
+}

@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react"
-import Blog from "./components/blog"
+import Blog from "./components/Blog"
 import "../index.css"
 import blogService from "../servises/blogs"
 import loginService from "../servises/login"
 import LoginForm from "./components/LoginForm"
 import Notification from "./components/Notification"
-import AddBlog from "./components/addBlogForm"
+import AddBlog from "./components/AddBlogForm"
 import Togglable from "./components/Togglable"
 
 const App = () => {
@@ -21,6 +21,9 @@ const App = () => {
       blogService.setToken(user.token)
       setUser(user)
       console.log(`${user.name} kirjautunut sisään`)
+      blogService
+        .getAll()
+        .then(blogs => setBlogs(blogs))
       setMessage(`Moi ${user.name}!`)
       setTimeout(() => {
         setMessage(null)
@@ -36,18 +39,18 @@ const App = () => {
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedAppUser')
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
+      blogService
+        .getAll()
+        .then(blogs => setBlogs(blogs))
     }
   }, [])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedAppUser')
     if (loggedUserJSON) {
-      blogService
-        .getAll()
-        .then(blogs => setBlogs(blogs))
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
     }
   }, [])
 
@@ -57,7 +60,9 @@ const App = () => {
     try {
       const addedBlog = await blogService.create(blogObject)
       console.log('lisätty blogi: ', addedBlog)
-      setBlogs(blogs.concat(addedBlog))
+      blogService
+        .getAll()
+        .then(blogs => setBlogs(blogs))
       console.log('blogs tila muutettu')
       setMessage('Uusi blogi lisätty onnistuneesti')
       setTimeout(() => {
@@ -120,6 +125,8 @@ const App = () => {
 
   const blogFormRef = useRef()
 
+  const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
+
   if (user === null) {
     return (
       <div>
@@ -131,8 +138,6 @@ const App = () => {
       </div>
     )
   }
-
-  const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
 
   return (
     <div>
@@ -155,6 +160,7 @@ const App = () => {
           blog={blog}
           handleDelete={handleDelete}
           addLike={handleLike}
+          user={user.name}
         />
       )}
 

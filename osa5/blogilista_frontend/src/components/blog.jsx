@@ -3,8 +3,9 @@ import { FcCollapse, FcExpand, FcLike } from "react-icons/fc"
 import { MdDelete } from "react-icons/md"
 import PropTypes from "prop-types"
 
-const Blog = ({ blog, handleDelete, addLike }) => {
+const Blog = ({ blog, handleDelete, addLike, user }) => {
   const [visible, setVisible] = useState(false)
+  const [deleteVisible, setDeleteVisible] = useState(false)
 
   const blogStyle = {
     paddingTop: 5,
@@ -47,7 +48,7 @@ const Blog = ({ blog, handleDelete, addLike }) => {
   }
 
   return (
-    <div style={ blogStyle } id="blog">
+    <div style={ blogStyle } className="blog">
       { blog.title }, { blog.author }
       <FcExpand
         style={ hideWhenVisible }
@@ -70,11 +71,12 @@ const Blog = ({ blog, handleDelete, addLike }) => {
         <br/>
         {blog.user.name}
         <br/>
+        {user === blog.user.name &&
         <MdDelete
           style={ deleteStyle }
           onClick={ () => handleDelete(blog.id) }
           id="delete"
-        />
+        />}
       </div>
     </div>
   )

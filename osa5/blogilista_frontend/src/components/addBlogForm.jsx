@@ -32,6 +32,7 @@ const AddBlogForm = ({ createBlog }) => {
       <h3>Lisää uusi blogi:</h3>
       <form onSubmit={addBlog}>
         <input
+          id="title"
           style={inputStyle}
           value={title}
           onChange={ event => setTitle(event.target.value) }
@@ -39,6 +40,7 @@ const AddBlogForm = ({ createBlog }) => {
         />
         <br />
         <input
+          id="author"
           style={inputStyle}
           value={author}
           onChange={ event => setAuthor(event.target.value) }
@@ -46,13 +48,14 @@ const AddBlogForm = ({ createBlog }) => {
         />
         <br />
         <input
+          id="url"
           style={inputStyle}
           value={url}
           onChange={ event => setUrl(event.target.value) }
           placeholder="URL"
         />
         <br />
-        <button type="submit">Tallenna</button>
+        <button id="add-button" type="submit">Tallenna</button>
       </form>
     </div>
   )

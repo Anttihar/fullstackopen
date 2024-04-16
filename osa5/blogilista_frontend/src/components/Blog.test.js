@@ -1,7 +1,7 @@
 import React from "react"
 import "@testing-library/jest-dom"
 import { render, screen } from "@testing-library/react"
-import Blog from "./blog"
+import Blog from "/blog"
 import userEvent from "@testing-library/user-event"
 
 describe('<Blog />', () => {
