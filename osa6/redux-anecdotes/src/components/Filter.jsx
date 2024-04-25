@@ -6,7 +6,6 @@ const Filter = () => {
 
   const handleChange = (event) => {
     event.preventDefault()
-    console.log('filter: ', event.target.value)
     dispatch(filterChange(event.target.value))
   }
 
@@ -17,7 +16,7 @@ const Filter = () => {
   return (
     <div style={style}>
       Filter
-      <input onChange={handleChange} />
+      <input id="filterInput" onChange={handleChange} />
     </div>
   )
 }
