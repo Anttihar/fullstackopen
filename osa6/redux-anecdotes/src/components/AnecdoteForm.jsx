@@ -1,15 +1,15 @@
+import  { useDispatch } from "react-redux"
+import { createAnecdote } from "../reducers/anecdoteReducer"
 import PropTypes from "prop-types"
 
-const AnecdoteForm = ({ addAnecdote }) => {
+const AnecdoteForm = () => {
+  const dispatch = useDispatch()
 
   const newAnecdote = (event) => {
     event.preventDefault()
-    const value = event.target.anecdote.value
+    const content = event.target.anecdote.value
     event.target.anecdote.value = ''
-    addAnecdote({
-      content: value,
-      votes: 0
-    })
+    dispatch(createAnecdote(content))
   }
 
   AnecdoteForm.propTypes = {
