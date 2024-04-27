@@ -1,20 +1,21 @@
-import { useDispatch } from "react-redux"
-import { createAnecdote } from "../reducers/anecdoteReducer"
-import { createNotification, emptyNotification } from "../reducers/notificationReducer"
+import PropTypes from "prop-types"
 
-const AddAnecdote = () => {
-  const dispatch = useDispatch()
+const AnecdoteForm = ({ addAnecdote }) => {
 
   const newAnecdote = (event) => {
     event.preventDefault()
-    const content = event.target.anecdote.value
+    const value = event.target.anecdote.value
     event.target.anecdote.value = ''
-    dispatch(createAnecdote(content))
-    dispatch(createNotification(`New anecdote created: '${content}'`))
-    setTimeout(() => {
-      dispatch(emptyNotification())
-    }, 5000);
+    addAnecdote({
+      content: value,
+      votes: 0
+    })
   }
+
+  AnecdoteForm.propTypes = {
+    addAnecdote: PropTypes.func.isRequired
+  }
+
   return (
     <div>
       <h2>Create new</h2>
@@ -30,4 +31,4 @@ const AddAnecdote = () => {
   )
 }
 
-export default AddAnecdote
+export default AnecdoteForm

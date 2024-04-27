@@ -21,9 +21,9 @@ const Anecdotes = () => {
   
   const sortedAnecdotes = arrayforsort.sort((a, b) => b.votes - a.votes)
 
-  const handleVoteClick = (anecdote) => {
-    dispatch(vote(anecdote.id))
-    dispatch(voteNotification(`Voted anecdote: '${anecdote.content}'`))
+  const handleVoteClick = (id, content) => {
+    dispatch(vote(id))
+    dispatch(voteNotification(`Voted anecdote: '${content}'`))
     setTimeout(() => {
       dispatch(emptyNotification())
     }, 5000)
@@ -32,15 +32,15 @@ const Anecdotes = () => {
   return (
     <div>
       {sortedAnecdotes.map(anecdote =>
-        <ul key={anecdote.id}>
+        <ol key={anecdote.id}>          
           <div>
             {anecdote.content}
           </div>
           <div>
             has {anecdote.votes}
-            <button onClick={ () => handleVoteClick(anecdote)}>vote</button>
           </div>
-        </ul>
+          <button onClick={ () => handleVoteClick(anecdote.id, anecdote.content)}>vote</button>
+        </ol>
       )}
     </div>
   )
