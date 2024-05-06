@@ -8,6 +8,8 @@ const notiReducer = (state, action) => {
       return state = `You just created new anecdote: ${action.payload}`
     case 'EMPTY':
       return state = null
+    case 'ERROR':
+      return state = action.payload
   }
 }
 

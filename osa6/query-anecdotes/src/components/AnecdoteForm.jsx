@@ -5,12 +5,19 @@ import { useNotiDispatch } from "../NotificationContext"
 const AnecdoteForm = () => {
   const queryClient = useQueryClient()
   const notiDispatch = useNotiDispatch()
+  
   const newAnecdoteMutation = useMutation({
     mutationFn: createAnecdote,
     onSuccess: (newAnecdote) => {
       const notes = queryClient.getQueryData(['anecdotes'])
       queryClient.setQueryData(['anecdotes'], notes.concat(newAnecdote))
       notiDispatch({ type: 'CREATE', payload: newAnecdote.content })
+      setTimeout(() => {
+        notiDispatch({ type: 'EMPTY' })
+      }, 5000)
+    },
+    onError: (error) => {
+      notiDispatch({ type: 'ERROR', payload: error.response.data.error })
       setTimeout(() => {
         notiDispatch({ type: 'EMPTY' })
       }, 5000)
