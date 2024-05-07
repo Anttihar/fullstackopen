@@ -1,10 +1,12 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import PropTypes from 'prop-types'
 
 const CreateNew = (props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
+  const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -14,10 +16,13 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    props.setNoti(content)
+    navigate('/')
   }
 
   CreateNew.propTypes = {
-    addNew: PropTypes.func.isRequired
+    addNew: PropTypes.func.isRequired,
+    setNoti: PropTypes.func.isRequired
   }
 
   return (
