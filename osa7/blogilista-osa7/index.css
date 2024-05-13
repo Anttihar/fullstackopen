@@ -1,0 +1,32 @@
+.message {
+  color: green;
+  background-color: lightgrey;
+  font-size: 15px;
+  padding: 10px;
+  padding-right: 10px;
+  margin: 10px;
+  border: 2px;
+  border-color: green;
+  border-radius: 5px;
+  border-style: solid;
+}
+
+.errorMessage {
+  color: red;
+  background-color: lightgrey;
+  font-size: 15px;
+  padding: 10px;
+  padding-right: 10px;
+  margin: 10px;
+  border: 2px;
+  border-color: red;
+  border-radius: 5px;
+  border-style: solid;
+}
+
+.logged {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  font-style: oblique;
+}
