@@ -1,18 +1,21 @@
 import { useState, useEffect, useRef } from "react"
-import Blog from "./components/Blog"
 import "../index.css"
-import blogService from "../servises/blogs"
-import loginService from "../servises/login"
+import blogService from "./services/blogs"
+import loginService from "./services/login"
 import LoginForm from "./components/LoginForm"
+import Blogs from "./components/Blogs"
 import Notification from "./components/Notification"
 import AddBlog from "./components/AddBlogForm"
 import Togglable from "./components/Togglable"
+import { useDispatch } from "react-redux"
+import { setBlogs } from "./reducers/blogReducer"
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
+
+  const dispatch = useDispatch()
 
   const login = async (username, password) => {
     try {
@@ -21,7 +24,7 @@ const App = () => {
       blogService.setToken(user.token)
       setUser(user)
       console.log(`${user.name} kirjautunut sisään`)
-      blogService.getAll().then((blogs) => setBlogs(blogs))
+      blogService.getAll().then(blogs => dispatch(setBlogs(blogs)))
       setMessage(`Moi ${user.name}!`)
       setTimeout(() => {
         setMessage(null)
@@ -37,18 +40,12 @@ const App = () => {
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedAppUser")
     if (loggedUserJSON) {
-      blogService.getAll().then((blogs) => setBlogs(blogs))
-    }
-  }, [])
-
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedAppUser")
-    if (loggedUserJSON) {
+      blogService.getAll().then(blogs => dispatch(setBlogs(blogs)))
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       blogService.setToken(user.token)
     }
-  }, [])
+  }, [dispatch])
 
   const addBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
@@ -71,48 +68,6 @@ const App = () => {
     }
   }
 
-  const handleDelete = (id) => {
-    if (window.confirm(`Haluatko varmasti poistaa tämän blogin?`)) {
-      blogService
-        .remove(id)
-        .then(() => {
-          setBlogs(blogs.filter((blog) => blog.id !== id))
-          setMessage("Blogi poistettu")
-          setTimeout(() => {
-            setMessage("")
-          }, 5000)
-        })
-        .catch((error) => {
-          console.log(error.response.status)
-          if (error.response.status === 401) {
-            setErrorMessage(
-              "Käyttöoikeutesi eivät riitä tämän blogin poistamiseen",
-            )
-            setTimeout(() => {
-              setErrorMessage("")
-            }, 5000)
-          } else {
-            setErrorMessage("Blogin poistaminen epäonnistui")
-            setTimeout(() => {
-              setErrorMessage("")
-            }, 5000)
-          }
-        })
-    }
-  }
-
-  const handleLike = async (likedObject) => {
-    try {
-      const likedBlog = await blogService.update(likedObject)
-      console.log(likedBlog)
-      setBlogs(
-        blogs.map((blog) => (blog.id !== likedBlog.id ? blog : likedObject)),
-      )
-    } catch (error) {
-      setErrorMessage("jotain meni pieleen")
-    }
-  }
-
   const logout = () => {
     setUser(null)
     window.localStorage.clear()
@@ -120,14 +75,10 @@ const App = () => {
 
   const blogFormRef = useRef()
 
-  const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
-
   if (user === null) {
     return (
       <div>
         <h1>Blogilista</h1>
-        <br />
-        <h3>Kirjaudu sisään:</h3>
         <LoginForm login={login} />
         <Notification errorMessage={errorMessage} />
       </div>
@@ -149,17 +100,7 @@ const App = () => {
       <Togglable buttonLabel="Lisää uusi blogi" ref={blogFormRef}>
         <AddBlog createBlog={addBlog} user={user.name} />
       </Togglable>
-
-      <h3>Blogit:</h3>
-      {sortedBlogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          handleDelete={handleDelete}
-          addLike={handleLike}
-          user={user.name}
-        />
-      ))}
+      <Blogs user={user} />
 
       <br />
       <Notification message={message} errorMessage={errorMessage} />
