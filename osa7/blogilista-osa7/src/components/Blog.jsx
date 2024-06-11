@@ -1,12 +1,13 @@
 import { useState } from "react"
-import blogService from "../services/blogs"
-import { FcCollapse, FcExpand, FcLike } from "react-icons/fc"
-import { MdDelete } from "react-icons/md"
-import PropTypes from "prop-types"
 import { useDispatch } from "react-redux"
-import { deleteBlog, likeBlog } from "../reducers/blogReducer"
+import { likeBlog } from "../reducers/blogReducer"
+import { setErrorMessage, setMessage } from "../reducers/messageReducer"
+import Name from "./Name"
+import { Link } from "react-router-dom"
+import PropTypes from "prop-types"
+import { FcCollapse, FcExpand, FcLike } from "react-icons/fc"
 
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog }) => {
   const [visible, setVisible] = useState(false)
   const dispatch = useDispatch()
 
@@ -24,10 +25,6 @@ const Blog = ({ blog, user }) => {
     marginLeft: 5,
   }
 
-  const deleteStyle = {
-    color: "red",
-  }
-
   const hideWhenVisible = {
     display: visible ? "none" : "",
   }
@@ -42,45 +39,15 @@ const Blog = ({ blog, user }) => {
 
   const handleLike = (blog) => {
     const likedBlog = { ...blog, likes: blog.likes + 1 }
-
     try {
-      blogService.update(likedBlog)
-        .then(likedBlog => dispatch(likeBlog(likedBlog)))
+      dispatch(likeBlog(likedBlog))
+      dispatch(setMessage(`Tykätty blogista ${likedBlog.title}!`))
+      setTimeout(() => {
+        dispatch(setMessage(null))
+      }, 5000)
     } catch (error) {
-      /*setErrorMessage("jotain meni pieleen")*/
       console.error(error)
-    }
-  }
-
-  const handleDelete = (id) => {
-    if (window.confirm(`Haluatko varmasti poistaa tämän blogin?`)) {
-      blogService.remove(id)
-        .then(() => {
-          dispatch(deleteBlog(id))
-          /*
-          setMessage("Blogi poistettu")
-          setTimeout(() => {
-            setMessage("")
-          }, 5000)
-          */
-        })
-        .catch((error) => {
-          console.log(error.response.status)
-          /*
-          if (error.response.status === 401) {
-            setErrorMessage(
-              "Käyttöoikeutesi eivät riitä tämän blogin poistamiseen",
-            )
-            setTimeout(() => {
-              setErrorMessage("")
-            }, 5000)
-          } else {
-            setErrorMessage("Blogin poistaminen epäonnistui")
-            setTimeout(() => {
-              setErrorMessage("")
-            }, 5000)
-          } */
-        })
+      dispatch(setErrorMessage('Jotakin meni pieleen..'))
     }
   }
 
@@ -90,7 +57,7 @@ const Blog = ({ blog, user }) => {
 
   return (
     <div style={blogStyle} className="blog">
-      {blog.title}, {blog.author}
+      <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>, {blog.author}
       <FcExpand
         style={hideWhenVisible}
         onClick={toggleVisibility}
@@ -106,16 +73,7 @@ const Blog = ({ blog, user }) => {
         <br />
         Tykkäykset: {blog.likes}
         <FcLike style={likeStyle} onClick={() => handleLike(blog)} id="like" />
-        <br />
-        {blog.user.name}
-        <br />
-        {user === blog.user.name && (
-          <MdDelete
-            style={deleteStyle}
-            onClick={() => handleDelete(blog.id)}
-            id="delete"
-          />
-        )}
+        <Name blog={blog} />
       </div>
     </div>
   )

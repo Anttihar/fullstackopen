@@ -1,17 +1,22 @@
 import { useSelector } from "react-redux"
 import Blog from "./Blog"
+import Togglable from "./Togglable"
+import AddBlogForm from "./AddBlogForm"
 
-const Blogs = ({ user }) => {
-  const blogs = useSelector(state => state.blogs)
-  console.log('blogit: ', blogs)
+const Blogs = () => {
+  const blogs = useSelector(({ blogs }) => blogs)
+  const sortedBlogs = [...blogs].sort((a,b) => b.likes - a.likes)
+
   return (
     <div>
+      <Togglable buttonLabel="Lisää uusi blogi">
+        <AddBlogForm />
+      </Togglable>
       <h3>Blogit:</h3>
-      {blogs.map(blog => (
+      {sortedBlogs.map(blog => (
         <Blog
           key={blog.id}
           blog={blog}
-          user={user.name}
         />
       ))}
     </div>

@@ -1,9 +1,15 @@
 import { useState } from "react"
-import PropTypes from "prop-types"
+import { useDispatch } from "react-redux"
+import loginService from '../services/login'
+import blogService from '../services/blogs'
+import { setUser } from "../reducers/userReducer"
+import { setMessage, setErrorMessage } from "../reducers/messageReducer"
 
-const LoginForm = ({ login }) => {
+const LoginForm = () => {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
+
+  const dispatch = useDispatch()
 
   const handleLogin = (event) => {
     event.preventDefault()
@@ -12,8 +18,22 @@ const LoginForm = ({ login }) => {
     setPassword("")
   }
 
-  LoginForm.propTypes = {
-    login: PropTypes.func.isRequired,
+  const login = async (username, password) => {
+    try {
+      const user = await loginService.login({ username, password })
+      window.localStorage.setItem("loggedAppUser", JSON.stringify(user))
+      blogService.setToken(user.token)
+      dispatch(setUser(user))
+      dispatch(setMessage(`Moi ${user.name}!`))
+      setTimeout(() => {
+        dispatch(setMessage(null))
+      }, 5000)
+    } catch (exeption) {
+      dispatch(setErrorMessage("Virheellinen käyttäjätunnus tai salasana"))
+      setTimeout(() => {
+        dispatch(setErrorMessage(null))
+      }, 5000)
+    }
   }
 
   return (

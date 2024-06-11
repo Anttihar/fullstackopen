@@ -1,30 +1,42 @@
 import { useState } from "react"
-import LoginForm from "./LoginForm"
-import PropTypes from "prop-types"
+import { useDispatch } from "react-redux"
+import { createBlog } from "../reducers/blogReducer"
+import { setMessage, setErrorMessage } from "../reducers/messageReducer"
 
-const AddBlogForm = ({ createBlog }) => {
+const AddBlogForm = () => {
   const [title, setTitle] = useState("")
   const [author, setAuthor] = useState("")
   const [url, setUrl] = useState("")
+  const dispatch = useDispatch()
 
   const addBlog = (event) => {
     event.preventDefault()
-    createBlog({
-      title: title,
-      author: author,
-      url: url,
-    })
-    setTitle("")
-    setAuthor("")
-    setUrl("")
+    const newObject = {
+      title,
+      author,
+      url,
+      likes: 0
+    }
+    try {
+      dispatch(createBlog(newObject))
+      dispatch(setMessage('Uusi blogi lisätty onnistuneesti!'))
+      setTimeout(() => {
+        dispatch(setMessage(null))
+      }, 5000)
+      setTitle("")
+      setAuthor("")
+      setUrl("")
+    } catch (error) {
+      console.error(error)
+      dispatch(setErrorMessage("Jotain meni pieleen"))
+      dispatch(setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000))
+    }
   }
 
   const inputStyle = {
     marginBottom: 1,
-  }
-
-  LoginForm.propTypes = {
-    createBlog: PropTypes.func.isRequired,
   }
 
   return (
