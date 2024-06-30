@@ -4,6 +4,7 @@ import loginService from '../services/login'
 import blogService from '../services/blogs'
 import { setUser } from "../reducers/userReducer"
 import { setMessage, setErrorMessage } from "../reducers/messageReducer"
+import { Form, Row, Col, Button } from "react-bootstrap"
 
 const LoginForm = () => {
   const [username, setUsername] = useState("")
@@ -39,28 +40,30 @@ const LoginForm = () => {
   return (
     <div>
       <h3>Kirjaudu sisään:</h3>
-      <form onSubmit={handleLogin}>
-        <input
-          id="username"
-          name="username"
-          value={username}
-          onChange={(event) => setUsername(event.target.value)}
-          placeholder="Käyttäjänimi"
-        />
-        <br />
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          placeholder="Salasana"
-        />
-        <br />
-        <button id="login-button" type="submit">
+      <Form onSubmit={handleLogin}>
+        <Form.Group as={Row} className="formUsername mb-2">
+          <Form.Label column sm="1">Käyttäjänimi</Form.Label>
+          <Col sm="3">
+            <Form.Control
+              placeholder="Käyttäjänimi"
+              onChange={(event) => setUsername(event.target.value)}
+            />
+          </Col>
+        </Form.Group>
+        <Form.Group as={Row} className="formPassword mb-2">
+          <Form.Label column sm="1">Salasana</Form.Label>
+          <Col sm="3">
+            <Form.Control
+              type="password"
+              placeholder="Salasana"
+              onChange={(event => setPassword(event.target.value))}
+            />
+          </Col>
+        </Form.Group>
+        <Button id="login-button" type="submit">
           Kirjaudu
-        </button>
-      </form>
+        </Button>
+      </Form>
     </div>
   )
 }

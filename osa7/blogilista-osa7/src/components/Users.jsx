@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux"
 import User from "./User"
+import { Table } from "react-bootstrap"
 
 const Users = () => {
   const users = useSelector(state => state.users)
@@ -8,21 +9,24 @@ const Users = () => {
   return (
     <div>
       <h3>Käyttäjät:</h3>
-      <table>
+      <Table striped bordered>
         <thead>
           <tr>
-            <th>Nimi:</th><th>Blogit:</th>
+            <th>#</th>
+            <th>Nimi:</th>
+            <th>Blogit:</th>
           </tr>
         </thead>
         <tbody>
-          {sortedUsers.map(user =>
+          {sortedUsers.map((user, i) =>
             <User
               key={user.id}
               user={user}
+              i={i}
             />
           )}
         </tbody>
-      </table>
+      </Table>
     </div>
   )
 }

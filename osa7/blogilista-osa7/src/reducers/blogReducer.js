@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 import blogService from "../services/blogs"
 import { initializeUsers } from "./usersReducer"
+import { setErrorMessage, setMessage } from "./messageReducer"
 
 const blogSlice = createSlice({
   name: 'blogs',
@@ -56,6 +57,15 @@ export const deleteBlog = (id) => {
     dispatch(removeBlog(id))
     await blogService.remove(id)
     dispatch(initializeUsers())
+  }
+}
+
+export const addComment = (comment, id) => {
+  return async dispatch => {
+    console.log('reducerissa: ',comment, id)
+    const response = await blogService.addComment(comment, id)
+    console.log('response: ', response)
+    dispatch(initializeBlogs())
   }
 }
 

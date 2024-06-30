@@ -2,28 +2,13 @@ import { useState } from "react"
 import { useDispatch } from "react-redux"
 import { likeBlog } from "../reducers/blogReducer"
 import { setErrorMessage, setMessage } from "../reducers/messageReducer"
-import Name from "./Name"
 import { Link } from "react-router-dom"
 import PropTypes from "prop-types"
 import { FcCollapse, FcExpand, FcLike } from "react-icons/fc"
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, i }) => {
   const [visible, setVisible] = useState(false)
   const dispatch = useDispatch()
-
-  const blogStyle = {
-    paddingTop: 5,
-    paddingLeft: 5,
-    paddingBottom: 5,
-    border: "solid",
-    borderRadius: 3,
-    borderWidth: 1,
-    marginBottom: 5,
-  }
-
-  const likeStyle = {
-    marginLeft: 5,
-  }
 
   const hideWhenVisible = {
     display: visible ? "none" : "",
@@ -56,26 +41,27 @@ const Blog = ({ blog }) => {
   }
 
   return (
-    <div style={blogStyle} className="blog">
-      <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>, {blog.author}
-      <FcExpand
-        style={hideWhenVisible}
-        onClick={toggleVisibility}
-        id="expand"
-      />
-      <FcCollapse
-        style={showWhenVisible}
-        onClick={toggleVisibility}
-        id="collapse"
-      />
-      <div style={showWhenVisible} id="expanded">
-        {blog.url}
-        <br />
-        Tykkäykset: {blog.likes}
-        <FcLike style={likeStyle} onClick={() => handleLike(blog)} id="like" />
-        <Name blog={blog} />
-      </div>
-    </div>
+    <tr>
+      <td>
+        {i + 1}
+      </td>
+      <td>
+        <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+        <p className="mb-0" style={showWhenVisible}>Linkki blogiin: <a href={blog.url}>{blog.url}</a></p>
+        <p className="mb-0" style={showWhenVisible}>Tykkää! <FcLike onClick={() => handleLike(blog)} /></p>
+        <p className="mb-0" style={showWhenVisible}>Blogin lisännyt: {blog.user.name}</p>
+      </td>
+      <td>
+        {blog.author}
+      </td>
+      <td>
+        {blog.likes}
+      </td>
+      <td>
+        <FcExpand style={hideWhenVisible} onClick={() => toggleVisibility()} />
+        <FcCollapse style={showWhenVisible} onClick={() => toggleVisibility()} />
+      </td>
+    </tr>
   )
 }
 

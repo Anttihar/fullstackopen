@@ -1,10 +1,11 @@
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { setMessage } from "./reducers/messageReducer"
 import { setUser } from "./reducers/userReducer"
-import { Routes, Route, Link, useNavigate } from "react-router-dom"
+import { Routes, Route } from "react-router-dom"
 import "../index.css"
+import 'bootstrap/dist/css/bootstrap.min.css'
 import blogService from "./services/blogs"
+import NaviBar from "./components/NavBar"
 import LoginForm from "./components/LoginForm"
 import Blogs from "./components/Blogs"
 import Notification from "./components/Notification"
@@ -16,7 +17,6 @@ import { initializeUsers } from "./reducers/usersReducer"
 
 const App = () => {
   const dispatch = useDispatch()
-  const navigate = useNavigate()
   const user = useSelector(state => state.user.user)
 
   useEffect(() => {
@@ -30,22 +30,6 @@ const App = () => {
     }
   }, [dispatch])
 
-  const logout = () => {
-    dispatch(setUser(null))
-    window.localStorage.clear()
-    navigate('/')
-    if (!window.localStorage.getItem("loggedAppUser")) {
-      dispatch(setMessage('Uloskirjautuminen onnistunut'))
-      setTimeout(() => {
-        dispatch(setMessage(null))
-      }, 5000)
-    }
-  }
-
-  const padding = {
-    padding: 7
-  }
-
   if (user === null) {
     return (
       <div>
@@ -57,25 +41,10 @@ const App = () => {
   }
 
   return (
-    <div>
+    <div className="container">
       <div>
-        <div>
-          <Link style={padding} to="/">Blogit</Link>
-          <Link style={padding} to="/users">Käyttäjät</Link>
-        </div>
-
-        <h1>Blogilista</h1>
-
-        {user && (
-          <div className="logged">
-            {user.name} kirjautunut
-            <br />
-            <button onClick={() => logout()}>Kirjaudu ulos</button>
-          </div>
-        )}
-
+        <NaviBar />
         <Notification />
-
       </div>
       <Routes>
         <Route path="/users/:id" element={<UserBlogs />} />
