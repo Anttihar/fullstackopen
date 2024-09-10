@@ -3,9 +3,11 @@ import { useField } from "../hooks"
 import PropTypes from 'prop-types'
 
 const CreateNew = (props) => {
+  const reset = useField('reset')
   const content = useField('text')
   const author = useField('text')
   const info = useField('text')
+  
 
   const navigate = useNavigate()
 
@@ -39,7 +41,8 @@ const CreateNew = (props) => {
         <div>
           Url for more info: <input {...info} />
         </div>
-        <button>Create</button>
+        <button type="submit">Create</button>
+        <button {...reset}>Reset</button>
       </form>
     </div>
   )
