@@ -1,62 +1,7 @@
 const { ApolloServer } = require('@apollo/server')
 const { startStandaloneServer } = require('@apollo/server/standalone')
-const { books, authors, genres } = require('./data.js')
-
-const typeDefs = `
-  type Query {
-    bookCount: Int!
-    authorCount: Int!
-    allAuthors: [Author]
-    allGenres: [Genre]
-    allBooks(author: String = "", genre: String = ""): [Book]
-  }
-
-  type Book {
-    title: String!
-    author: String!
-    published: Int!
-    genres: [String]
-  }
-
-  type Author {
-    name: String!
-    id: String!
-    born: Int
-    bookCount: Int!
-  }
-
-  type Genre {
-    name: String
-    id: String
-  }
-`
-
-const resolvers = {
-  Query: {
-    bookCount: () => books.length,
-    authorCount: () => authors.length,
-    allBooks: (root, args) => {
-      console.log(args)
-      if (args.author === "" && args.genre === "") {
-        return books
-      }
-      if (args.author !== "") {
-        return books.filter(b => b.author === args.author)
-      }
-      if (args.genre !== "") {
-        console.log("genreen tultiin")
-        return books.filter(b => b.genres.includes(args.genre))
-      }
-    },
-    allAuthors: () => authors,
-    allGenres: () => genres
-  },
-  Author: {
-    bookCount: (root) => {
-      return books.filter(b => (b.author === root.name)).length
-    }
-  }
-}
+const resolvers = require('./resolvers.js')
+const typeDefs = require('./schemas.js')
 
 const server = new ApolloServer({
   typeDefs,
