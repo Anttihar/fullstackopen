@@ -8,7 +8,7 @@ const typeDefs = `
     authorCount: Int!
     allAuthors: [Author]
     allGenres: [Genre]
-    allBooks(author: String = ""): [Book]
+    allBooks(author: String = "", genre: String = ""): [Book]
   }
 
   type Book {
@@ -37,10 +37,16 @@ const resolvers = {
     authorCount: () => authors.length,
     allBooks: (root, args) => {
       console.log(args)
-      if (args.author === "") {
+      if (args.author === "" && args.genre === "") {
         return books
       }
-      return books.filter(b => b.author === args.author)
+      if (args.author !== "") {
+        return books.filter(b => b.author === args.author)
+      }
+      if (args.genre !== "") {
+        console.log("genreen tultiin")
+        return books.filter(b => b.genres.includes(args.genre))
+      }
     },
     allAuthors: () => authors,
     allGenres: () => genres
