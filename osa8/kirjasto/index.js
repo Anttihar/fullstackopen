@@ -22,6 +22,7 @@ const typeDefs = `
     name: String!
     id: String!
     born: Int
+    bookCount: Int!
   }
 
   type Genre {
@@ -37,6 +38,11 @@ const resolvers = {
     allBooks: () => books,
     allAuthors: () => authors,
     allGenres: () => genres
+  },
+  Author: {
+    bookCount: (root) => {
+      return books.filter(b => (b.author === root.name)).length
+    }
   }
 }
 
