@@ -18,7 +18,6 @@ const resolvers = {
        return books.filter(b => b.author === args.author)
       }
       if (args.genre !== "") {
-        console.log("genreen tultiin")
         return books.filter(b => b.genres.includes(args.genre))
       }
     },
@@ -27,13 +26,24 @@ const resolvers = {
   },
   Mutation: {
     addBook(root, args) {
-      const book = {...args, id: uuid()}
-      books.push(book)
-      if (authors.find(a => a.name !== args.name)) {
-        const author = { name: args.author, id: uuid() }
-        authors.push(author)
+      const newBook = {...args, id: uuid()}
+      books.push(newBook)
+      const author = authors.find(a => a.name === args.author)
+      if (!author) {
+        const newAuthor = { name: args.author, id: uuid() }
+        authors.push(newAuthor)
       }
-      return book
+      return newBook
+    },
+    editAuthor: async (root, args) => {
+      const author = authors.find(a => a.name === args.name)
+      const index = authors.findIndex(a => a.name === args.name)
+      if (!author) {
+        return null
+      }
+      const updatedAuthor = { ...author, born: args.born }
+      authors[index] = updatedAuthor
+      return updatedAuthor
     }
   },
   Author: {
