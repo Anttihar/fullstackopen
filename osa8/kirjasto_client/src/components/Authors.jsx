@@ -1,7 +1,6 @@
 import { Box, Typography } from "@mui/material"
 
-const Authors = () => {
-  const authors = []
+const Authors = ({ authors }) => {
 
   return (
     <Box>
@@ -9,7 +8,7 @@ const Authors = () => {
       <table>
         <tbody>
           <tr>
-            <th></th>
+            <th>Name</th>
             <th>Born</th>
             <th>Books</th>
           </tr>
