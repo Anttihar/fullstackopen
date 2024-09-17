@@ -1,26 +1,38 @@
-import { Box, Typography } from "@mui/material"
+import {
+  Box,
+  Table,
+  TableBody,
+  TableHead,
+  TableCell,
+  TableRow,
+  Typography
+} from "@mui/material"
 
 const Authors = ({ authors }) => {
 
   return (
-    <Box>
-      <Typography variant="h2" sx={{ m: 2 }}>Authors</Typography>
-      <table>
-        <tbody>
-          <tr>
-            <th>Name</th>
-            <th>Born</th>
-            <th>Books</th>
-          </tr>
+    <Box sx={{ display: "grid", justifyContent:"center" }}>
+      <Typography variant="h2" sx={{ m: 2, textAlign: "center" }}>
+        Authors
+      </Typography>
+      <Table size="small">
+        <TableHead>
+          <TableRow>
+            <TableCell sx={{ fontWeight: 600 }}>Name</TableCell>
+            <TableCell sx={{ fontWeight: 600 }}>Born</TableCell>
+            <TableCell sx={{ fontWeight: 600 }}>Books</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
           {authors.map((a) => (
-            <tr key={a.name}>
-              <td>{a.name}</td>
-              <td>{a.born}</td>
-              <td>{a.bookCount}</td>
-            </tr>
+            <TableRow key={a.name}>
+              <TableCell>{a.name}</TableCell>
+              <TableCell>{a.born}</TableCell>
+              <TableCell>{a.bookCount}</TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </Box>
   )
 }

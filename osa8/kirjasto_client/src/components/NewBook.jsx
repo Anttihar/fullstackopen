@@ -1,5 +1,14 @@
-import { Box, Typography } from '@mui/material'
+import { useMutation, useQuery } from '@apollo/client'
+import {
+  Box,
+  FormControl,
+  FormLabel,
+  TextField,
+  Button,
+  Typography
+} from '@mui/material'
 import { useState } from 'react'
+import { ADD_BOOK, ALL_AUTHORS } from '../queries'
 
 const NewBook = () => {
   const [title, setTitle] = useState('')
@@ -7,11 +16,15 @@ const NewBook = () => {
   const [published, setPublished] = useState('')
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
+  
+  const [ createBook ] = useMutation(ADD_BOOK, {
+    refetchQueries: [{ query: ALL_AUTHORS }]
+  })
 
   const submit = async (event) => {
     event.preventDefault()
 
-    console.log('add book...')
+    createBook({ variables: { title, author, published, genres } })
 
     setTitle('')
     setPublished('')
@@ -26,44 +39,50 @@ const NewBook = () => {
   }
 
   return (
-    <Box>
-      <Typography variant='h2' sx={{ m: 2 }}>
+    <Box sx={{ display: "grid", justifyContent: "center" }}>
+      <Typography variant='h2' sx={{ m: 2, textAlign: "center" }}>
         Add new book
       </Typography>
       <form onSubmit={submit}>
-        <div>
-          Title
-          <input
+        <FormControl>
+          <TextField
+            label="Title"
+            type='text'
             value={title}
+            sx={{ m: 1 }}
+            size='small'
             onChange={({ target }) => setTitle(target.value)}
           />
-        </div>
-        <div>
-          Author
-          <input
+          <TextField
+            label="Author"
+            type='text'
             value={author}
+            sx={{ m: 1 }}
+            size='small'
             onChange={({ target }) => setAuthor(target.value)}
           />
-        </div>
-        <div>
-          Published
-          <input
-            type="number"
+          <TextField
+            label="Published"
+            type='number'
             value={published}
-            onChange={({ target }) => setPublished(target.value)}
+            sx={{ m: 1 }}
+            size='small'
+            onChange={({ target }) => setPublished(Number(target.value))}
           />
-        </div>
-        <div>
-          <input
-            value={genre}
-            onChange={({ target }) => setGenre(target.value)}
-          />
-          <button onClick={addGenre} type="button">
-            Add genre
-          </button>
-        </div>
-        <div>Genres: {genres.join(' ')}</div>
-        <button type="submit">Create book</button>
+          <Box>
+            <TextField
+              label="Genre"
+              type='text'
+              value={genre}
+              sx={{ m: 1 }}
+              size='small'
+              onChange={({ target }) => setGenre(target.value)}
+            />
+            <Button onClick={addGenre}>Add Genre</Button>
+          </Box>
+          <FormLabel sx={{ m: 1}}>Genres: {genres.join(", ")}</FormLabel>
+          <Button type='submit'>Submit</Button>
+        </FormControl>
       </form>
     </Box>
   )

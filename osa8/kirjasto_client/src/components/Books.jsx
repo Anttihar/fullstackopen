@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client"
-import { Box, Typography } from "@mui/material"
+import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material"
 import { ALL_BOOKS } from "../queries"
 
 const Books = () => {
@@ -10,26 +10,28 @@ const Books = () => {
   }
   
   return (
-    <Box>
-      <Typography variant="h2" sx={{ m: 2 }}>
+    <Box sx={{ display: "grid", justifyContent:"center" }}>
+      <Typography variant="h2" sx={{ m: 2, textAlign: "center" }}>
         Books
       </Typography>
-      <table>
-        <tbody>
-          <tr>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Published</th>
-          </tr>
+      <Table size="small">
+        <TableHead>
+          <TableRow>
+            <TableCell sx={{ fontWeight: 600 }}>Title</TableCell>
+            <TableCell sx={{ fontWeight: 600 }}>Author</TableCell>
+            <TableCell sx={{ fontWeight: 600 }}>Published</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
           {result.data.allBooks.map((a) => (
-            <tr key={a.title}>
-              <td>{a.title}</td>
-              <td>{a.author}</td>
-              <td>{a.published}</td>
-            </tr>
+            <TableRow key={a.title}>
+              <TableCell>{a.title}</TableCell>
+              <TableCell>{a.author}</TableCell>
+              <TableCell>{a.published}</TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </Box>
   )
 }
