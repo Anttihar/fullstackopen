@@ -1,5 +1,13 @@
 import { useQuery } from "@apollo/client"
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material"
+import {
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography
+} from "@mui/material"
 import { ALL_BOOKS } from "../queries"
 
 const Books = () => {
