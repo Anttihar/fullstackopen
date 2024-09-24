@@ -1,54 +1,64 @@
 const { books, authors, genres } = require('./data.js')
-const { v1: uuid } = require('uuid')
+const Book = require('./models/Book.js')
+const Author = require('./models/Author.js')
 
 const resolvers = {
   Query: {
-    bookCount: () => books.length,
-    authorCount: () => authors.length,
-    allBooks: (root, args) => {
-      console.log(args)
+    bookCount: async () => await Book.collection.countDocuments(),
+    authorCount: async () => await Author.collection.countDocuments(),
+    allBooks: async (root, args) => {
       if (args.author === "" && args.genre === "") {
-        return books
+        return Book.find({}).populate('author', { name: 1, born: 1 })
       }
       if (args.author !== "" && args.genre !== "") {
-        const filteredBooks = books.filter(b => b.author === args.author)
+        const author = await Author.find({ name: args.author })
+        const filteredBooks = await Book.find({ author: author[0]._id }).populate('author', { name: 1, born: 1 })
         return filteredBooks.filter(b => b.genres.includes(args.genre))
       }
       if (args.author !== "") {
-       return books.filter(b => b.author === args.author)
+        const author = await Author.find({ name: args.author })
+        return Book.find({ author: author[0]._id }).populate('author', { name: 1, born: 1 })
+        
       }
       if (args.genre !== "") {
-        return books.filter(b => b.genres.includes(args.genre))
+        return Book.find({ genres: args.genre })
       }
+
     },
-    allAuthors: () => authors,
-    allGenres: () => genres
+    allAuthors: async () => Author.find({})
   },
+
   Mutation: {
-    addBook(root, args) {
-      const newBook = {...args, id: uuid()}
-      books.push(newBook)
-      const author = authors.find(a => a.name === args.author)
+    async addBook(root, args) {
+      const author = await Author.findOne({ name: args.author })
+      console.log('author: ', author)
       if (!author) {
-        const newAuthor = { name: args.author, id: uuid() }
-        authors.push(newAuthor)
+        const newAuthor = new Author({ name: args.author })
+        await newAuthor.save().then(result => {
+          console.log("uusi author: ", result)
+        })
+        const newBook = new Book({ ...args, author: newAuthor._id })
+        await newBook.save()
+        return Book.findById(newBook.id).populate('author', { name: 1 })
       }
-      return newBook
+      const newBook = new Book({ ...args, author: author._id })
+      await newBook.save()
+      return Book.findById(newBook.id).populate('author', { name: 1 })
     },
-    editAuthor: async (root, args) => {
-      const author = authors.find(a => a.name === args.name)
-      const index = authors.findIndex(a => a.name === args.name)
+    async editAuthor(root, args) {
+      const author = await Author.findOneAndUpdate({ name: args.name, born: args.born, new: true  })
+      console.log(author)
       if (!author) {
         return null
       }
-      const updatedAuthor = { ...author, born: args.born }
-      authors[index] = updatedAuthor
-      return updatedAuthor
+      return author
     }
   },
+
   Author: {
-    bookCount: (root) => {
-      return books.filter(b => (b.author === root.name)).length
+    async bookCount(root) {
+      const books = await Book.find({ author: root._id })
+      return books.length
     }
   }
 }
