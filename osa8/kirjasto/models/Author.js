@@ -4,7 +4,7 @@ const authorSchema = Schema({
   name: {
     type: String,
     required: true,
-    minlenght: 4
+    minLength: 4
   },
   born: Number
 })

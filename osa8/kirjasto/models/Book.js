@@ -3,7 +3,8 @@ const { model, Schema } = require('mongoose')
 const bookSchema = new Schema({
   title: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   author: {
     type: Schema.Types.ObjectId,
