@@ -1,1 +1,0 @@
-QraphQL harjoitustehtäviä
