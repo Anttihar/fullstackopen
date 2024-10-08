@@ -28,6 +28,10 @@ const typeDefs = `#graphql
     ): Token!
   }
 
+  type Subscription {
+    bookAdded: Book!
+  }
+
   type Book {
     title: String!
     author: Author!

@@ -1,8 +1,10 @@
 const Book = require('../models/Book.js')
 const Author = require('../models/Author.js')
-const { GraphQLError } = require('graphql')
+const { GraphQLError, subscribe } = require('graphql')
 const jwt = require('jsonwebtoken')
 const User = require('../models/User.js')
+const { PubSub } = require('graphql-subscriptions')
+const pubsub = new PubSub()
 
 const resolvers = {
   Query: {
@@ -100,7 +102,12 @@ const resolvers = {
           }
         })
       }
-      return Book.findById(newBook.id).populate('author')
+
+      const addedBook = await Book.findById(newBook.id).populate('author')
+
+      pubsub.publish('BOOK_ADDED', { bookAdded: addedBook })
+
+      return addedBook
     },
 
     editAuthor: async (root, args, context) => {
@@ -160,6 +167,12 @@ const resolvers = {
             }
           })
         })
+    }
+  },
+
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator('BOOK_ADDED')
     }
   },
 

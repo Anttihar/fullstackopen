@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from '../queries'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -20,7 +20,7 @@ const NewBook = ({ setMessage, setErrMessage }) => {
 
   const navigate = useNavigate()
 
-  const [ createBook ] = useMutation(ADD_BOOK, {
+  const [ createBook, { data } ] = useMutation(ADD_BOOK, {
     refetchQueries: [{ query: ALL_AUTHORS }],
     onError: (error) => {
       console.log(error.graphQLErrors[0].message)
@@ -38,6 +38,21 @@ const NewBook = ({ setMessage, setErrMessage }) => {
     }
   })
 
+  useEffect(() => {
+    if (data) {
+      setMessage(`Added new book ${title}`)
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000);
+      setTitle('')
+      setPublished('')
+      setAuthor('')
+      setGenres([])
+      setGenre('')
+      navigate('/books')
+    }
+  },[data])
+
   const submit = async (event) => {
     event.preventDefault()
     await createBook({
@@ -48,16 +63,6 @@ const NewBook = ({ setMessage, setErrMessage }) => {
         genres
       }
     })
-    setMessage(`Added new book ${title}`)
-    setTimeout(() => {
-      setMessage(null)
-    }, 5000);
-    setTitle('')
-    setPublished('')
-    setAuthor('')
-    setGenres([])
-    setGenre('')
-    navigate('/books')
   }
 
   const addGenre = () => {
