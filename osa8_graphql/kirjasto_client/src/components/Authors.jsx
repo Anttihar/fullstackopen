@@ -17,7 +17,7 @@ import {
 const Authors = ({ authors, setErrMessage }) => {
   const [addBirth, setAddBirth] = useState(null)
   const [born, setBorn] = useState("")
-
+console.log("authors: ", authors)
   const [ addBorn ] = useMutation(ADD_BORN, {
     refetchQueries: [{ query: ALL_AUTHORS }],
     onError: (error) => {
@@ -67,7 +67,7 @@ const Authors = ({ authors, setErrMessage }) => {
                   </Button>
                 }
               </TableCell>
-              <TableCell>{a.bookCount}</TableCell>
+              <TableCell>{a.books.length}</TableCell>
             </TableRow>
           ))}
         </TableBody>

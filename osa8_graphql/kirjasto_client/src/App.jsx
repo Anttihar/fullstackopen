@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom"
-import { useQuery } from "@apollo/client"
+import { useApolloClient, useQuery, useSubscription } from "@apollo/client"
 import { useEffect, useState } from "react"
 import Authors from "./components/Authors"
 import Books from "./components/Books"
@@ -7,17 +7,35 @@ import NewBook from "./components/NewBook"
 import Navbar from "./components/Navbar"
 import { Container } from "@mui/material"
 import '@fontsource/roboto/400.css'
-import { ALL_AUTHORS, ALL_BOOKS } from "./queries"
+import { ALL_AUTHORS, ALL_BOOKS, BOOK_ADDED } from "./queries"
 import LoginForm from "./components/LoginForm"
 import Notification from "./components/Notification"
 import Recommendations from "./components/Recommendations"
+import Swal from "sweetalert2"
+
+export const updateCache = (cache, query, addedBook) => {
+  const uniqByTitle = (allBooks) => {
+    let books = new Set()
+    return allBooks.filter(book => {
+      let title = book.title
+      return books.has(title) ? false : books.add(title)
+    })
+  }
+  cache.updateQuery(query, (data) => {
+    return {
+      allBooks: uniqByTitle(data.allBooks.concat(addedBook))
+    }
+  })
+}
 
 const App = () => {
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
   const [errMessage, setErrMessage] = useState(null)
+  const client = useApolloClient()
 
   const result = useQuery(ALL_AUTHORS)
+
   useQuery(ALL_BOOKS, {
     variables: { selectedGenre: null }
   })
@@ -29,6 +47,22 @@ const App = () => {
       setUser(user)
     }
   }, [])
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      const addedBook = data.data.bookAdded
+      Swal.fire({
+        icon: "success",
+        title: `New book '${addedBook.title}' added!`,
+        text: `By ${user.username}`
+      })
+      updateCache(
+        client.cache,
+        { query: ALL_BOOKS, variables: { selectedGenre: null } },
+        addedBook
+      )
+    }
+  })
 
   if (result.loading) {
     return null

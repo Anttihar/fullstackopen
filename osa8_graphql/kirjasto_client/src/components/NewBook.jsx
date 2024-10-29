@@ -2,6 +2,8 @@ import { useMutation } from '@apollo/client'
 import { useEffect, useState } from 'react'
 import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from '../queries'
 import { useNavigate } from 'react-router-dom'
+import { updateCache } from '../App'
+import Swal from 'sweetalert2'
 import {
   Box,
   FormControl,
@@ -11,7 +13,7 @@ import {
   Typography
 } from '@mui/material'
 
-const NewBook = ({ setMessage, setErrMessage }) => {
+const NewBook = ({ setErrMessage }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [published, setPublished] = useState('')
@@ -29,21 +31,21 @@ const NewBook = ({ setMessage, setErrMessage }) => {
         setErrMessage(null)
       }, 5000)
     },
-    update: (cache, response) => {
-      cache.updateQuery({ query: ALL_BOOKS, variables: { selectedGenre: null } }, (data) => {
-        return {
-          allBooks: data.allBooks.concat(response.data.addBook)
-        }
-      })
+    update: (cache, { data }) => {
+      updateCache(
+        cache,
+        { query: ALL_BOOKS, variables: { selectedGenre: null } },
+        data.addBook
+      )
     }
   })
 
   useEffect(() => {
     if (data) {
-      setMessage(`Added new book ${title}`)
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000);
+      Swal.fire({
+        icon: "success",
+        title: `${data.addBook.title} added!`
+      })
       setTitle('')
       setPublished('')
       setAuthor('')
