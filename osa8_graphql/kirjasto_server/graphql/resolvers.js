@@ -1,6 +1,6 @@
 const Book = require('../models/Book.js')
 const Author = require('../models/Author.js')
-const { GraphQLError, subscribe } = require('graphql')
+const { GraphQLError } = require('graphql')
 const jwt = require('jsonwebtoken')
 const User = require('../models/User.js')
 const { PubSub } = require('graphql-subscriptions')
@@ -11,7 +11,6 @@ const resolvers = {
     bookCount: async () => await Book.collection.countDocuments(),
     authorCount: async () => await Author.collection.countDocuments(),
     allBooks: async (root, args) => {
-      console.log('args: ', args)
       if (args.author && args.genre) {
         const author = await Author.find({ name: args.author })
         if (author.length === 0) {
@@ -32,7 +31,9 @@ const resolvers = {
       }
       return Book.find({}).populate('author')
     },
-    allAuthors: async () => await Author.find({}),
+    allAuthors: async () => {
+      return Author.find({}).populate('books')
+    },
     me: async (root, args, context) => {
       return User.findById(context.currentUser.id)
         .populate({ path: 'books', populate: 'author' })
@@ -87,7 +88,8 @@ const resolvers = {
         author = await new Author({ name: args.author })
       }
       const newBook = new Book({ ...args, author: author._id })
-      
+      author.books = author.books.concat(newBook._id)
+      console.log("author:", author)
       try {
         await author.save()
         await newBook.save()
@@ -128,7 +130,7 @@ const resolvers = {
       return author
     },
 
-    async login(root, args) {
+    login: async(root, args) => {
       const user = await User.findOne({ username: args.username })
       if (!user || args.password !== 'secret') {
         throw new GraphQLError('invalid username or password', {
@@ -173,13 +175,6 @@ const resolvers = {
   Subscription: {
     bookAdded: {
       subscribe: () => pubsub.asyncIterator('BOOK_ADDED')
-    }
-  },
-
-  Author: {
-    async bookCount(root) {
-      const books = await Book.find({ author: root._id })
-      return books.length
     }
   }
 }

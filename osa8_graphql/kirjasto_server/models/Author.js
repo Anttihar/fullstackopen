@@ -6,7 +6,13 @@ const authorSchema = Schema({
     required: true,
     minLength: 4
   },
-  born: Number
+  born: Number,
+  books: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Book'
+    }
+  ]
 })
 
 module.exports = model('Author', authorSchema)
