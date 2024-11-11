@@ -1,0 +1,16 @@
+{
+  "name": "project1",
+  "version": "1.0.0",
+  "description": "fullstackopen",
+  "main": "index.js",
+  "scripts": {
+    "ts-node": "ts-node",
+    "bmi": "ts-node bmiCalculator.ts"
+  },
+  "author": "Antti Harra",
+  "license": "ISC",
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  }
+}
