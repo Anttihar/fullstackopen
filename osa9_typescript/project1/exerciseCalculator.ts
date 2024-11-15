@@ -8,22 +8,40 @@ interface ExerciseValues {
   feedback: string
 }
 
-const calculateExercises = (args: number[]): ExerciseValues => {
+interface Arguments {
+  values: number[],
+  target: number
+}
+
+const parseArgs = (args: string[]): Arguments => {
+  const target = Number(args[2])
+  if (isNaN(target) || target < 0) {
+    throw new Error('Invalid target value')
+  }
+  const values: number[] = args.map(Number).slice(3)
+  if (values.find(v => isNaN(v)) === undefined) {
+    return { values, target }
+  } else {
+    throw new Error('Provided invalid value.')
+  }
+}
+
+const calculateExercises = (args: number[], target: number): ExerciseValues => {
   const trainingDays: number[] = args.filter(a => a !== 0)
   const sum: number = args.reduce((a, value) => a + value, 0)
-  const average: number = sum / 7
+  const average: number = sum / args.length
   const rating = (): number => {
-    if (average < 1.5) {
+    if (average < target) {
       return 1
-    } else if (average < 1.8) {
+    } else if (average < target + 0.3) {
       return 2
-    } else if (average >= 1.7) {
+    } else if (average >= target + 0.3) {
       return 3
     }
   }
-  const feedback = () => {
+  const feedback = (): string => {
     if (rating() === 1) {
-      return "You didnt reach your goal. Get back to work!"
+      return "You did not reach your goal. Get back to work!"
     } else if (rating() === 2) {
       return "Good job! You reached your target."
     } else if (rating() === 3) {
@@ -33,12 +51,21 @@ const calculateExercises = (args: number[]): ExerciseValues => {
   return {
     periodLength: args.length,
     trainingDays: trainingDays.length,
-    target: 1.5,
+    target: target,
     average: average,
-    success: average < 1.5 ? false : true,
+    success: average < target ? false : true,
     rating: rating(),
     feedback: feedback()
   }
 }
 
-console.log(calculateExercises([1, 8, 0, 2, 0, 1, 4]))
+try {
+  const { values, target } = parseArgs(process.argv)
+  console.log(calculateExercises(values, target))
+} catch (error: unknown) {
+  let errorMessage = 'Something went wrong.'
+  if(error instanceof Error) {
+    errorMessage += ' Error: ' + error.message
+  }
+  console.log(errorMessage)
+}
