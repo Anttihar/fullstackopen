@@ -37,6 +37,8 @@ const calculateExercises = (args: number[], target: number): ExerciseValues => {
       return 2
     } else if (average >= target + 0.3) {
       return 3
+    } else {
+      throw new Error('Unable to calculate rating by given values')
     }
   }
   const feedback = (): string => {
@@ -46,6 +48,8 @@ const calculateExercises = (args: number[], target: number): ExerciseValues => {
       return "Good job! You reached your target."
     } else if (rating() === 3) {
       return "Awesome! You exceeded your goal by far"
+    } else {
+      throw new Error('Unable to give feedback by given values')
     }
   }
   return {
