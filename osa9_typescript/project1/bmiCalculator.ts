@@ -17,26 +17,29 @@ const parseArguments = (args: string[]): Values => {
   }
 }
 
-const calculateBmi = (h: number, w: number) => {
+export const calculateBmi = (h: number, w: number): string => {
   const bmi: number = w / ((h / 100) ** 2)
   if (bmi < 18.5) {
-    console.log('Underweight')
+    return 'Underweight'
   } else if (bmi >= 18.5 && bmi < 25) {
-    console.log('Normal range')
+    return 'Normal range'
   } else if (bmi >= 25 && bmi < 30) {
-    console.log('Overweight')
+    return'Overweight'
   } else if (bmi >= 30) {
-    console.log('Obese')
+    return'Obese'
+  } else {
+    throw new Error('Could not calculate BMI with given values')
   }
 }
-
+if (require.main === module) {
 try {
   const { height, weight } = parseArguments(process.argv)
-  calculateBmi(height, weight)
+  console.log(calculateBmi(height, weight))
 } catch (error: unknown) {
   let errorMessage = 'Something went wrong.'
   if (error instanceof Error) {
     errorMessage += ' Error: ' + error.message
   }
   console.log(errorMessage)
+}
 }
