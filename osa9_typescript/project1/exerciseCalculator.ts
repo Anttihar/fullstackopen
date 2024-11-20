@@ -26,7 +26,7 @@ const parseArgs = (args: string[]): Arguments => {
   }
 };
 
-const calculateExercises = (args: number[], target: number): ExerciseValues => {
+export const calculateExercises = (args: number[], target: number): ExerciseValues => {
   const trainingDays: number[] = args.filter(a => a !== 0);
   const sum: number = args.reduce((a, value) => a + value, 0);
   const average: number = sum / args.length;
@@ -62,14 +62,15 @@ const calculateExercises = (args: number[], target: number): ExerciseValues => {
     feedback: feedback()
   };
 };
-
-try {
-  const { values, target } = parseArgs(process.argv);
-  console.log(calculateExercises(values, target));
-} catch (error: unknown) {
-  let errorMessage = 'Something went wrong.';
-  if(error instanceof Error) {
-    errorMessage += ' Error: ' + error.message;
+if (require.main === module) {
+  try {
+    const { values, target } = parseArgs(process.argv);
+    console.log(calculateExercises(values, target));
+  } catch (error: unknown) {
+    let errorMessage = 'Something went wrong.';
+    if(error instanceof Error) {
+      errorMessage += ' Error: ' + error.message;
+    }
+    console.log(errorMessage);
   }
-  console.log(errorMessage);
 }
