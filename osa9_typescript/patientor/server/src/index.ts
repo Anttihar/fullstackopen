@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/api/ping", (_req, res) => {
-  console.log('Hello!');
+  console.log('Someone pinged here!');
   res.send("pong");
 });
 

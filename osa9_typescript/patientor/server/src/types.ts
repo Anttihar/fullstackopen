@@ -1,3 +1,6 @@
+import { z } from "zod";
+import { NewPatientSchema } from "../utils/parserSchema";
+
 export enum Gender {
   Male = "male",
   Female = "female",
@@ -21,4 +24,4 @@ export interface Patient {
 
 export type NonSensitivePatients = Omit<Patient, 'ssn'>;
 
-export type NewPatient = Omit<Patient, 'id'>;
+export type NewPatient = z.infer<typeof NewPatientSchema>;
